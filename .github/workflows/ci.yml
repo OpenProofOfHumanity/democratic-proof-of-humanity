@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Send telegram message on pull request to review
         if: github.event.pull_request.merged == false && github.event.action != 'closed'
-        uses: appleboy/telegram-action@master
+        uses: appleboy/telegram-action@2e9996f96e095a537aa4442da4af41ca7b594fba
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
             Title: ${{ github.event.pull_request.title }}
       - name: Send telegram message on pull request merged to main
         if: github.event.pull_request.merged == true
-        uses: appleboy/telegram-action@master
+        uses: appleboy/telegram-action@2e9996f96e095a537aa4442da4af41ca7b594fba
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
