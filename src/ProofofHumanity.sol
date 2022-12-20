@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/math/SafeMath.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
+import "forge-std/interfaces/IERC20.sol";
 
 contract ProofofHumanity {
-  using SafeMath for uint256;
-  using SafeERC20 for ERC20;
 
   // Set up the ERC20 token
-  ERC20 private _token;
+  IERC20 private _token;
   string public name;
   string public symbol;
   uint8 public decimals;
@@ -47,17 +44,7 @@ contract ProofofHumanity {
 
   constructor(
       address _curator,
-      ERC20 _token,
-      string memory _name,
-      string memory _symbol,
-      uint8 _decimals,
-      uint256 _totalSupply,
-      uint256 _minDeposit,
-      uint256 _applyStageLength,
-      uint256 _votingStageLength,
-      uint256 _minQuorum,
-      uint256 _voteQuorum,
-      uint256 _votingPeriodLength
+      IERC20 _token
   ) public {
       // Set the owner and curator
       owner = msg.sender;
@@ -65,19 +52,6 @@ contract ProofofHumanity {
 
       // Set up the ERC20 token
       _token = _token;
-      name = _name;
-      symbol = _symbol;
-      decimals = _decimals;
-      totalSupply = _totalSupply;
-      _token.initialize(totalSupply);
-
-      // Set up the registry parameters
-      minDeposit = _minDeposit;
-      applyStageLength = _applyStageLength;
-      votingStageLength = _votingStageLength;
-      minQuorum = _minQuorum;
-      voteQuorum = _voteQuorum;
-      votingPeriodLength = _votingPeriodLength;
   }
 
   // Function to add a human to the registry
