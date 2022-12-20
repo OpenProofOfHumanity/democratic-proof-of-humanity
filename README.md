@@ -1,5 +1,47 @@
 # Democratic Proof Of Humanity
 
+<!-- TOC -->
+* [Democratic Proof Of Humanity](#democratic-proof-of-humanity)
+  * [Overview](#overview)
+  * [Goals](#goals)
+    * [Sybil resistance](#sybil-resistance)
+    * [Censorship resistance](#censorship-resistance)
+    * [Sustainability](#sustainability)
+    * [Credible decentralization](#credible-decentralization)
+    * [Fairness](#fairness)
+* [Design Proposal](#design-proposal)
+  * [Registry](#registry)
+    * [Web Of Trust (Needs more research)](#web-of-trust--needs-more-research-)
+      * [Direct Connection](#direct-connection)
+      * [Relative Connection Distance](#relative-connection-distance)
+      * [Global Centrality](#global-centrality)
+      * [Proof of Physical Contact](#proof-of-physical-contact)
+        * [Notes](#notes)
+    * [Privacy](#privacy)
+    * [Notes](#notes-1)
+  * [Universal Basic Income](#universal-basic-income)
+    * [Overview](#overview-1)
+      * [Funding Example](#funding-example)
+      * [Utility & Charity Burn](#utility--charity-burn)
+    * [Universal Burn Rate](#universal-burn-rate)
+      * [Example](#example)
+      * [Notes](#notes-2)
+    * [Security Deposit](#security-deposit)
+      * [PID Controller for SDF](#pid-controller-for-sdf)
+      * [Example](#example-1)
+      * [Notes](#notes-3)
+  * [Court](#court)
+      * [Challenges](#challenges)
+      * [Protect against honest mistakes](#protect-against-honest-mistakes)
+    * [Court](#court-1)
+      * [Jury Selection](#jury-selection)
+      * [Jury Delegation](#jury-delegation)
+      * [Court Proceedings](#court-proceedings)
+        * [Jury Privacy](#jury-privacy)
+    * [Specific courts](#specific-courts)
+  * [Multi-chain](#multi-chain)
+<!-- TOC -->
+
 ## Overview
 This document is a draft specification of a sustainable and self-contained Proof Of Humanity design on top of Ethereum blockchain.
 
@@ -9,10 +51,21 @@ Such system must meet multiple criteria to be considered credibly neutral, espec
 
 ## Goals
 ### Sybil resistance
-Provide incentives that result in registry that is free from Sybil attacks. Any registered Human needs to provide Proof of Humanity, which is subject to scrutiny by economically incentivized Seekers.
+A [Sybil](https://en.wikipedia.org/wiki/Sybil_attack) in PoH Registry could be considered any person or other entity that violates rule of one Human -> one Entry mapping in order to gain some benefit, like:
+1. Gaining monetary value from owning multiple sources of UBI.
+2. Manipulating this or another DAO voting if defined by Quadratic Voting or similar approaches aimed at encouraging direct involvement more than delegated.
+3. Gaining an increased influence over Social Media integrating with the PoH Registry by manipulating its members opinions by normalizing certain viewpoints.
+4. Benefiting in another way from the Registry destruction or simply trolling / griefing it.
+
+Common types of Sybils, include:
+1. Duplicate - multiple submissions of the same person pretending to be different people. The easiest one to discover due to wide availability of face-recognition software.
+2. Fake - A.I. Deep-Fakes. It's possible to Deep-Fake external Evidence, like a photo or a video with made-up faces.
+3. Puppet - it's also possible to bribe or force some real people to record a video on behalf of an Attacker. We must ensure to keep Applicants well-informed about benefits of PoH and UBI.
+
+In order for the registry to be viable, it must have builtin protections from such actors that will make these attacks expensive, slow and economically unfeasible to pull off at large scale and in longer time-frame. The system should penalize Sybils and their Vouchers disproportionately more than benefits they could potentially gain. It should also account for the fact, that good fake detection software may not be available for some time even after the registration, therefore any security deposit should be permanent bounty.
 
 ### Censorship resistance
-Any living Human has a right to register. No ethnic, citizenship, religious, political, medical socioeconomic status or any other categorization should be any ground to deny access to the service.
+Any living Human has a right to register. No ethnic, citizenship, religious, political, medical socioeconomic status or any other categorization should be any ground to deny access to the service. The system design should aim for long-term decentralization of all powers (governance, court system).
 
 ### Sustainability
 Ensure that the protocol will maintain its core properties even after many years through proper incentive mechanisms.
@@ -21,7 +74,7 @@ Ensure that the protocol will maintain its core properties even after many years
 Open Source all software and facilitate multiple frontends. Ensure decentralizing structure of all aspects of the registry along population trajectory, meaning that no single centralized entity or external DAO has permanent control over any aspect of the system.
 
 ### Fairness
-All rules make every participant equal and UBI distribution is even for all registered humans and may vary up to 50% (we might decrease it or remove it) between participants, depending on other transparently defined incentives targeting security (WOT). No organization has ability to print UBI or force taxation to benefit it. Fees, Burn and required Deposits mechanisms apply equally to everyone.
+All rules make every participant equal and UBI distribution is even for all registered humans and may vary up to 50% between participants, depending on other transparently defined incentives targeting security (WOT). No organization has ability to print UBI or force taxation to benefit it. All protocol properties, like: income, fees, burn rate and required deposit sizing apply equally to everyone.
 
 # Design Proposal
 Most points assume some prior knowledge of proofofhumanity.org specification. This document focuses primarily on important differences with previous implementation and harmonization of PoH Registry, UBI and Court subsystems.
@@ -29,66 +82,7 @@ Most points assume some prior knowledge of proofofhumanity.org specification. Th
 ## Registry
 The Registry is the main purpose of PoH. Every person may join and manage its associated entry and records. The registry is built on ethereum L1, but allows entry from cheap L2s, which then synchronize back to L1, making it the single source of truth.
 
-## UBI
-### Universal Basic Income
-In short UBI - it is a main token of the PoH Registry used to drive its incentive mechanisms. Its goal is to secure the Registry in form of required deposit and provide opportunity of fairly distributed wealth transfer.
-
-Every registered Human receives approximately 1 UBI per hour, and they can do with it whatever they want, including transfers, selling it on the free market or burning it to decrease its total supply.
-
-UBI is required to fund Deposit of new Humans in the registry, which allows it to act as a "rate-limiter" for new registrations. Having a UBI-based deposit is also beneficial for people who are anxious about risks of depositing harder assets, like ETH or stablecoins into unknown contracts just to register. Since UBI is tightly connected to PoH, the risk is removed, because if PoH was a scam, UBI that is printed by it would turn out to be worthless anyway.
-
-All operations on the registry, like updating own records (name, bio, other text records), requires some UBI to be burned (destroyed), which also adds additional friction to any spam attempts. This is especially important in L2 environments, where gas is cheap.
-
-#### Example
-![](https://i.imgur.com/lc0ZdxE.png)
-
-Alice is registered in PoH system, and she has accrued 1500 units of spendable UBI.
-
-![](https://i.imgur.com/w5fvzvq.png)
-
-1. Alice decides to Vouch and Fund Bob, because he is her close friend. Since UBI she got was free anyway, she doesn't experience any meaningful sense of loss.
-2. After Bob gets accepted into the Registry, he starts accruing UBI at the same rate as Alice. He decides, he wants to onboard his friend Charlie, but he hasn't yet accrued spendable amount of UBI to cover Charlies deposit. Charlie doesn't want to wait a month for Bob to accrue UBI.
-3. Charlie decides to buy it off the free market for DAI; and
-4. Begin registration process immediately.
-
-#### Notes
-UBI value doesn't come from nothing. At first, it's measured in utility of getting into the registry. Many people may be willing to buy UBI in order to self-fund their application (they still require at least one vouch). Once the registry gets sizeable, it should be relatively easy to influence businesses, like marketplaces, to self-tax and stream small portion of profits back to Humanity by simply passing it to smart contract, like UBI Burner that DCAs into UBI and burns it.
-
-POH DAO or another related organization could promote UBI-friendly initiatives, like:
-1. Promote / certify NFT marketplaces that pass e.g. % of sales fees to UBI Burner
-2. Promote artists, who commit % of their revenue from their art to UBI Burner
-3. Many european countries allow passing 1% of their income tax to charity organization of choice. Non-profits registered there, could convert this 1% of fiat to stables and pass it directly to UBI Burner.
-4. Award individual burners with collectibles, POAPs, etc
-5. Allow committing UBI Substream to burn income immediately or direct it to the PoH DAO.
-
-### Universal Burn Rate
-UBI is only increasing with time and Humans registered in the Registry, which makes it a highly inflationary token. We cannot make any assumptions that an average Circulating Supply per Person will decrease due to the Registry expansion or other utility fees.
-
-In order to combat this and to protect value coming from it to people who need it promptly, we need to introduce some mechanism that will limit hoarding. One such idea could be per-person limit, but because everyone is free to transfer their tokens to another address or lock them in a liquidity pool, we need a more universal approach of limiting Total Supply of UBI tokens.
-
-Universal Burn Rate or UBR is similar to "Negative Interest Rates" known from [traditional Central Banking](https://www.ecb.europa.eu/ecb/educational/explainers/tell-me-more/html/why-negative-interest-rate.en.html) or [decentralized collateralized stablecoin design](https://dankradfeist.de/ethereum/2021/09/27/stablecoins-supply-demand.html). Unlike examples above, UBI isn't a loan in either direction, therefore calling it "Negative Interest Rates" would be misleading, so we need more precise and intuitive terminology.
-
-#### Example
-Alice has saved up 10k UBI (>1 year worth) and the UBR is 25%. We don't want to consider new UBI inflow (1UBI/h), so let's assume that Alice transfers 10k UBI to a different wallet not used in registration. After a year, she only has 7.5k UBI on this wallet and a year later, only ~5.6k and so on. Note that she is still accruing it on her main account with rate 1UBI/h, so while she lost 2.5k during that year, she has still gained almost 8.7k UBI on her main wallet.
-
-How would the situation look like, if she saved up 30k UBI, instead of 10k UBI? It turns out, she'd be close to net-zero, because at a constant rate of +1 UBI/h she'd be losing a similar amount in her account due to Universal Burn. That would basically stabilize her savings at max ~3.5 years of UBI, including locked Deposit.
-
-#### Notes
-Main reason for Negative Rates existence is incentivizing "shorting" (betting against) the currency when it's worth more than its target value, either expressed in $, CPI or other indicator. Having a constant Burn rate of UBI incentives selling it as soon as it is received, which may cause additional selling pressure, since savers are aware that it's more profitable to sell it every day or week (assuming cheap gas on L2s), rather than holding it for long.
-
-This is not so different if compared to debasing currencies, like USD, which from 2010 to 2022 debased on average ~9% yearly (and ~7% before 2020-2021 Quantitative Easing). In UBI, since there is no physical cash, and it's all "electronic money" and with it there is no need to freeze numerical value of any note - we have the flexibility of being more straightforward and rebase it instead of debasing, thus allowing maintaining similar purchasing power of a single UBI token even after 50 years of operating the system, where each country with fiat currency must periodically increase minimum wage, social benefits, etc. in numerical terms.
-
-### Deposit
-A mandatory portion of locked UBI equal to every person. Its main goal is to act as a bounty for registry gatekeepers - Seekers. In case, a given Person turns out to be a Sybil, deposit is partially burned, partially acts as a reward to successful Seekers and partially is spent as Court fees and pays for Jury time.
-
-Deposit is a function of Total Supply divided by the number of registered Humans, i.e. 25% with some minimum value, like 720 UBI (roughly 1 person-month of streaming) and may increase over time, if UBI isn't burned fast enough. The locked-in deposit is not reflected in visible Account Balance, since it's not "spendable". In case, no UBI isn't voluntarily burned, it may slow down the effective increase of spendable UBI by up to 25%, which means that hourly increase of effective balance is 0.75 UBI/h in worst case scenario.
-
-#### Notes
-It's possible that UBI price could be so low due to lack of charitable actions, that even 1 year of it wouldn't be worth any trouble to the Seekers. In such scenario, to protect integrity of the registry from Sybils, it might be required to readjust minimum deposit from one month slowly to even two years of UBI, but a side effect would be that spendable account value would stop increasing for some time for people who have little or no savings, until the missing Deposit value is filled. This readjustment can be automated with oracle system.
-
-We shouldn't be worried about UBI value at first. If the registry is successful, there will be high demand for UBI in order to fund new peoples deposits. This "growth phase" may take many years. After the growth phase ends, high deposit expressed in UBI-time is justifiable, because, assuming the registry success, the only new people joining will be children of people already present there.
-
-### Web Of Trust
+### Web Of Trust (Needs more research)
 Previous implementation of PoH did not utilize any advanced Web Of Trust mechanics other than a single Vouch.
 
 WoT purpose is to enable better protection measures from Sybils that would attempt to infiltrate social network by reducing its "connectiveness". An obvious example of it impersonating Twitter account with lots of followers (all bots). Absolute number of followers is meaningless and easy to fake in this context, because none of these bot accounts are connected to you in any significant way.
@@ -100,158 +94,137 @@ Mutually confirmed relationship rooted in real world (Vouch-like). In Graph term
 
 It's also worth ensuring that if a connection is one-sided (follower), then a person targeted still gets the benefits of connectivity, but the follower doesn't. This is useful to prop-up local politicians or celebrities, etc. within your local network.
 
-#### Connection Distance
-Any pair of people has a distance assigned between them, which tells us what's the distance of the shortest path in Social Graph between them. Distance between you and a person you're directly connected with is exactly 1. Distance between you and any other person is the smallest Distance to that person from any person directly connected to you plus 1. Special value +Infinity applies to completely disconnected people, which should be rare.
+#### Relative Connection Distance
+Any pair of people has a distance assigned between them, which tells us what's the distance of the shortest path in 
+Social Graph between them. Distance between you and a person you're directly connected with is exactly 1. Distance between you and any other person is the smallest Distance to that person from any person directly connected to you plus 1. Special value +Infinity applies to completely disconnected people, which should be rare.
 
 Additional useful metric to point connection rank "Connection Strength": how many direct connections (links) would need to break in order for Connection Distance between these 2 people to increase. Let's use notation `(Distance, Strength)`. If Alice and Bob connection is `(2, 5)`. It means they have 5 common friends and should probably hang out. At the same time, `(2, 1)` could be a fluke or an attempt at social engineering and should be considered weaker than `(3, 20)`. Other scoring metric can be used as well to simplify above findings.
 
 Social Distance between each pair of people varies over time as people join and connect, and it should include last recalculated timestamp/block to let people see if that information isn't stale.
 
-##### Connection Closing Distance
-Optional - may be useful for calculating rewards for connecting people. Other metrics that calculate some nothion of []"centrality"](https://en.wikipedia.org/wiki/Centrality) should be explored.
 
-How much of total Distance is being "closed" (reduced) thanks to the existence of this particular Connection. If you meet a person at an airport in a foreign country and Connect, many people will get closer to one another. This metric measures the potential benefit of a particular connection to the whole network.
+#### Global Centrality
+May be useful for calculating rewards for connecting people or global confidence scoring.
+Explore options https://en.wikipedia.org/wiki/Centrality . Incentivising connectiveness allows for better security scoring thanks to high number of redundant connections.
 
-As density of the network increases, the rewards for existing Connections will decrease over time.
+#### Proof of Physical Contact
+It is possible to prove Physical contact with a variant of intertwining [Proof Of History](https://tokens-economy.gitbook.io/consensus/chain-based-proof-of-capacity-space/proof-of-history) method to prove low latency (e.g. <2ms or <5ms) between two wallet holders with NFC/Bluetooth technology. Example:
+1. Initiator looks up at the tip of the blockchain and hashes message: `"PoH Connect 0x1 with 0x2 on block: " + start_block`. Instead of using Signer and Wallet application directly, which may require confirmation on every exchange, one can deterministically and provably derive a new one-time private key based on message and signature.
+2. Sequentially exchange signed hash of peer message and recursive ZK-Proof back and forth thousands of times for ~5-10 seconds. Parameters depend on block time, link throughput, Hashing, Signing and ZK Proving compute overhead and allowed latency error.
+3. Calculate average exchange time and submit transaction with public parameters and proof on the blockchain for 
+   contract to verify it. Since it's a time-sensitive transaction, Proof of Humanity application should use high gas limit.
 
-Additional, small amount of stake must be committed per-connection, but boost coming from Network expansion should be at least net-neutral.
+Proof generation may take some time, which could potentially render latency irrelevant. Instead of running everything at once, it's possible to make the operation of establishing Connection 2-phase.
+1. Run the procedure with proving disabled, submitting last hash as commitment in timely manner (should take <10s for 2000 exchanges).
+2. Re-run the same exchange with proving enabled. Once the proof is generated, send it on-chain.
 
-##### Privacy
+##### Notes
+Unless there is hardware acceleration, proof generation may be too slow to be tolerable even in 2-step process.
+
+This method is only practical on cheap and fast L2/L3 with block time ~1s-2s. In order to verify L1 (12s block time), we'd need a much higher block inclusion tolerance, so the exchange would need to run for 1 minute or more.
+
+It's still possible to cheat by uploading wallet to a datacenter specific region and zone.
+
+
+### Privacy
 Private profile can create following attestations / badges:
+- I'm a verified human and I haven't created another pseudonymous profile for this site (semaphore, Sismo badge).
 - I'm within immediate social circle of this person. Verifiable whistleblower.
 - I'm closer than distance 3 to 80% of people registered on this forum. Honest opinion, whistle blowing.
 
 Base PoH doesn't need to provide these features from the start, but the DAO should facilitate and encourage standards.
 
-#### Notes
-Granting additional UBI for maintaining connections may come up as unfair, but if videos aren't enough (A.I. generation improves), it may become required for the system to rely on additional information, like graph analysis, to properly secure it. PoH V1 model doesn't incentivize extensive graph building, because most people only care about single vouch.
+### Notes
+PoH V1 model doesn't incentivize extensive graph building, because most people only care about single vouch.
+
+Granting additional UBI for maintaining connections may come up as unfair, but if videos aren't enough (A.I. generation improves), it may become required for the system to rely on additional information, like graph analysis and global confidence scoring to properly secure it. Instead of assigning binary flag: Human / Non-Human, attempt to express confidence in Humanity as probability or estimated cost of attack and automatically resize UBI stream based on that scoring.
 
 Calculating Web Of Trust matrix requires significant amount of off-chain computation. Final on-chain results or subset of them may need to be provided with ZK proof.
 
-We can't really verify that people know each other, unless they both provide transparent and verifiable proof that they know each other. We should not attempt to verify each connection transparently. A successful Sybil would not only need to create fake profile, but get connected with sufficiently dispersed groups of people in order to be plausible globally. In case, a Sybil is detected, each Connection is not only slashed, but also barred for some time (a year?) from creating new Connections. This system may be overlayed by other social networks, but since these allow non-humans or operate on Follower (IG, Twitter) basis than Connection, it seems there is some composable vacuum to be filled.
+We can't really verify that people know each other, unless they both provide transparent and verifiable proof that they know each other. We should not attempt to verify each connection transparently. A successful Sybil would not only need to create fake profile, but get connected with sufficiently dispersed groups of people in order to be plausible globally. In case, a Sybil is detected, each Connection is not only slashed, but also barred for some time (a year?) from creating new Connections, so any bribery attacks would be very costly. This system may be overlayed by other social networks, but since these allow non-humans or operate on Follower (IG, Twitter) basis than Connection, it seems there is some composable vacuum to be filled.
 
-Relative Social Distance scoring may be a very useful tool for scoring relative local relevancy of another Person or their unlikelihood of being a Sybil in various Social Media platforms. 
+In addition to scoring confidence in another person being Human, a Relative Connection Distance / Strength scoring may be a very useful tool for ranking relevancy of another Person in various social contexts.
 
 
-### Simulation
-Let's run a long simulation of UBI, assuming some parameters, like UBR, elastic deposit fraction and average growth of registry population. In these scenarios, we don't calculate effects of charity or taxes on the price of UBI - we only measure supply and deposit sizing.
+## Universal Basic Income
+### Overview
+In short UBI - it is a main token of the PoH Registry used to drive its incentive mechanisms. Its goal is to secure the Registry in form of required deposit and provide opportunity of fairly distributed wealth transfer.
 
-#### Code
-```python
+Every registered Human receives approximately 1 UBI per hour. Depending on market situation, some of it may be committed to Security Deposit and the remaining Surplus is left with receiver who may use it freely: create substream to stream to a person / organization of choice, transfer it, sell it or burn it.
+
+UBI is required to fund Deposit of new Humans in the registry, which allows it to act as a rate-limiter for new registrations. Having a UBI-based deposit is also beneficial for people who are anxious about risks of depositing harder assets, like ETH or stablecoins into unknown contracts just to register. Since UBI is tightly connected to PoH, the risk is removed, because if PoH was a scam, UBI that is printed by it would turn out to be worthless anyway.
+
+All operations on the registry, like updating own records (name, bio, other text records), requires some UBI to be burned (destroyed), which also adds additional friction to any spam attempts. This is especially important in L2 environments, where gas is cheap.
+
+#### Funding Example
+![](docs/images/Funding%20Registry%20with%20UBI%201.png)
+
+Alice is registered in PoH system, and she has accrued 1500 units of spendable UBI.
+
+![](docs/images/Funding%20Registry%20with%20UBI%202.png)
+
+1. Alice decides to Vouch and Fund Bob, because he is her close friend. Since UBI she got was free anyway, she doesn't experience any meaningful sense of loss.
+2. After Bob gets accepted into the Registry, he starts accruing UBI at the same rate as Alice. He decides, he wants to onboard his friend Charlie, but he hasn't yet accrued spendable amount of UBI to cover Charlies deposit. Charlie doesn't want to wait a month for Bob to accrue UBI.
+3. Charlie decides to buy it off the free market for DAI; and
+4. Begin registration process immediately.
+
+#### Utility & Charity Burn
+UBIs value doesn't come from nothing. At first, it's measured in utility of getting into the registry. Many people may be willing to buy UBI in order to self-fund their application. Once the registry gets sizeable, it should be relatively easy to influence businesses, like marketplaces, to self-tax and stream small portion of profits back to Humanity by simply passing it to smart contract, like UBI Burner that smooths buying into UBI and burns it.
+
+POH DAO or another related organization could promote UBI-friendly initiatives, like:
+1. Marketplaces that pass e.g. % of sales fees to UBI Burner
+2. Artists, who commit % of their revenue from their art to UBI Burner
+3. Many european countries allow passing 1% of their income tax to charity organization of choice. Non-profits registered there, could convert this 1% of fiat to stables and pass it directly to UBI Burner.
+4. Award individual burners with collectibles, POAPs, etc
+5. Allow committing UBI Substream to burn income immediately or direct it to the PoH DAO.
+
+### Universal Burn Rate
+UBI is only increasing with time and Humans registered in the Registry, which makes it a highly inflationary token. In case utility and charity burn don't exceed supply increase, we have a system that spirals down in security and UBI-price.
+
+In order to combat this and to protect value coming from it to people who need it promptly, we need to introduce some mechanism that will limit hoarding. One such idea could be per-person limit, but because everyone is free to transfer their tokens to another address or lock them in a liquidity pool, we need a more universal approach of limiting Total Supply of UBI tokens.
+
+Universal Burn Rate or UBR is similar to "Negative Interest Rates" known from [traditional Central Banking](https://www.ecb.europa.eu/ecb/educational/explainers/tell-me-more/html/why-negative-interest-rate.en.html) or [decentralized collateralized stablecoin design](https://dankradfeist.de/ethereum/2021/09/27/stablecoins-supply-demand.html). Unlike examples above, UBI isn't a loan in either direction, therefore calling it "Negative Interest Rates" would be misleading, so we need more precise and intuitive terminology. Alternative name could be "Negative Savings Rate".
+
+While on every block people accrue small amount of UBI, a small portion of all their UBI holdings is being burned at the same time. This means that at some point, unattended Total Balance should stabilize around equlibrium value. Following formula allows calculating per person Max Total Accrual pretty accurately:
+```
 import math
 
-import matplotlib.pyplot as plt
-
-income_daily = 24.0  # Every registered Human receives 1 UBI/h
-burn_rate = 0.75  # Universal Burn Rate yearly
-burn_rate_daily = math.pow(burn_rate, 1.0 / 365)  # Universal Burn Rate daily
-deposit_total_fraction = 0.25  # 1/4 of total supply is locked up as Per Human Deposit
-deposit_min = income_daily*30  # 1 month minimum deposit value in case there is little per-human UBI in circulation
-
-# every starting person gets X days of UBI to facilitate initial growth
-starting_humans_count = 100
-starting_humans_boost = income_daily*90
-
-daily_human_growth = math.pow(1.10, 1.0 / 30)  # ~10% monthly increase or ~3.1x growth each year
-months = 12*50  # 50 years of simulation
-days = months * 30  # it's only an estimate
-max_human_count = 10 * 10**9  # assume max population is 10 billion
-
-
-def sim() -> (int, float, float):
-    total_supply: float = starting_humans_count * starting_humans_boost
-    human_count: int = starting_humans_count
-
-    def per_human_deposit():
-        return max(total_supply / human_count * deposit_total_fraction, deposit_min)
-
-    for d in range(days):
-        # add money to existing people
-        new_ubi = human_count * income_daily
-        total_supply += new_ubi
-
-        # burn
-        total_supply *= burn_rate_daily
-
-        # calculate spendable supply
-        spendable_supply = total_supply - per_human_deposit() * human_count
-
-        # try adding some new people
-        new_humans = math.ceil((daily_human_growth-1.0) * human_count)
-        # ensure new people are capped by total spendable supply (assume all people share their UBI)
-        new_humans = min(new_humans, int(spendable_supply / per_human_deposit()))
-        # ensure max population isn't exceeded
-        if new_humans + human_count >= max_human_count:
-            new_humans = max_human_count - human_count
-
-        # decrease spendable supply
-        spendable_supply -= new_humans * per_human_deposit()
-        # update human counter
-        human_count += new_humans
-        if d % 30 == 0:
-            yield human_count, total_supply, spendable_supply
-
-
-# run simulation
-results = list(sim())
-
-
-# plot
-def plot_totals():
-    plt.grid(True)
-    plt.xlabel('Month')
-
-    plt.plot(range(months), [r[1]-r[2] for r in results], label='UBI Deposits')
-    plt.plot(range(months), [r[2] for r in results], label='UBI Spendable Supply')
-    plt.plot(range(months), [r[0] for r in results], label='Humans')
-    plt.yscale('log')
-    plt.title('Supply and Human count over time')
-    plt.legend()
-    plt.show()
-
-
-def plot_per_human():
-    fig, ax = plt.subplots()
-
-    ax.bar(range(months), [(r[1] - r[2]) / r[0] for r in results], label='Deposit')
-    ax.bar(range(months), [r[2] / r[0] for r in results], bottom=[(r[1] - r[2]) / r[0] for r in results],
-           label='Spendable')
-    ax.set_title("Per-Human average accumulated UBI")
-    ax.set_ylabel('UBI')
-    ax.legend()
-    plt.xlabel('Month')
-    plt.show()
-
-# select plot
-#plot_totals()
-plot_per_human()
+def max_total_accrual(ubr: float) -> float:
+    return 1.0/(1.0-math.pow(1.0-ubr, 1.0/(365*24)))
 ```
 
-### Results
-![](https://i.imgur.com/pERdvjy.png)
-![](https://i.imgur.com/xOyZ1OP.png)
+#### Example
+Alice has saved up 10k UBI (>1 year worth). We don't want to consider new UBI inflow (1 UBI/h), so let's assume that Alice transfers 10_000 UBI to a different wallet not used in registration. After a year, she only has 7_500 UBI on this wallet and a year later, only ~5_600 and so on. Note that she is still accruing it on her main account with rate 1 UBI/h, so while she has lost 2_500 UBI during that year, she has still gained almost 8_700 UBI of new UBI in her main wallet.
 
+How would the situation look like, if she has saved up 30 000 UBI, instead of 10 000 UBI? It turns out, she'd be close to net-zero, because at a constant rate of +1 UBI/h she'd be losing a similar amount in her account due to Universal Burn. That would basically stabilize her savings at max ~3.5 years of UBI, including locked Deposit.
 
-We may noteice two distinct phases: Growth, where there is a small amount of UBI in circulation and Stagnation when there may be more. As noted above, these results assume no charity burn, but even at 10 billion people, even committing 1 trillion $ yearly would allow 20% of poorest to receive 500$ each.
+#### Notes
+Main reason for Negative Rates existence is incentivizing "shorting" (betting against) the currency when it's worth more than its target value, either expressed in $, CPI or other indicator. Having a constant Burn rate of UBI incentives selling it as soon as it is received, which may cause additional selling pressure, since savers are aware that it's more profitable to sell it every day or week (assuming cheap gas on L2s), rather than holding it for long. This is something we have to accept, otherwise we're faced with an infinite growth of average per-person supply.
+
+This is not so different if compared to debasing currencies, like USD, which from 2010 to 2022 debased on average ~9% yearly (and ~7% before 2020-2021 Quantitative Easing). In UBI, since there is no physical cash, and it's all "electronic money" and with it there is no need to freeze numerical value of any note - we have the flexibility of being more straightforward and rebase it instead of debasing, thus allowing maintaining similar purchasing power of a single UBI token even after 50 years of operating the system, where each country with fiat currency must periodically increase minimum wage, social benefits, etc. in numerical terms.
+
+### Security Deposit
+A mandatory portion of UBI balance is always locked as Security Deposit to ensure proper incentives - bounties, court fees, fines, etc. Security Deposit size aims to target governance set value, e.g. $50 with some bounds, e.g. minimum of 720UBI (1 month) and maximum value dependent on UBR value, which should be close to maximum of organic accrual, e.g. `~3.5y` for `UBR = 25%`.
+
+#### PID Controller for SDF
+Since price of UBI is dynamic, and we'd like to keep the security of UBI tied to global economy, we're targeting Deposit worth in USD. The amount of UBI locked in Security Deposit is automatically being adjusted and is continuously affected by its own Security Deposit Flow rate - `SDF`, which may take any value between `[-1:1]`. The remainder of Total Balance is called Surplus or Spendable Balance, which may be used by its owner as a form of currency, to fund other people Security Deposits, trade, yield farm, save, etc.
+
+In case of a sudden price drop, Security Deposit may grow even at a rate of `1 UBI/h`, which means that all the newly accrued UBI is being forcefully committed to Security Deposit instead of Surplus Balance. Hopefully, `SDF = 1 UBI/h` is an extreme scenario - PID Controller should increase flow slowly over weeks or months and give early warning signal to activists or other people willing to support the cause to gather resources and fund UBI. At the same time, frequent spenders have limited capacity to flood the market with new UBI due to lower Surplus accrual rate, which should definitely lower the overall selling pressure over time.
+
+#### Example
+This example shows three scenarios and visual explanations of Flows and SDF PID Controller.
+
+![](docs/images/Security%20Deposit%20PID%20Controller.png)
+
+#### Notes
+It's possible that due to lack of charity and utility buing pressure, the registry will basically grind to a halt and stop any growth.
+
+We shouldn't be worried about UBI value at first. If the registry is successful, there will be high demand for UBI in order to fund new peoples deposits. This "growth phase" may take many years. After the growth phase ends, high deposit expressed in UBI-time is justifiable, because, assuming the registry success, the only new people joining will be children of people already present there.
+
+Due to Dynamic nature of Security Deposit flow current, it's not possible to predict if it won't overlap with totality of UBI Substreams. Because it's not possible to efficiently readjust or freeze batches of Substreams, we'll need to create condition where subflows are respected and Security Deposit is filled from Surplus. Violation of Security Deposit balance allows bots to freeze all Substreams automatically and receive a small reward (e.g. 1/12 Deposit).
 
 ## Court
-Court is a mechanism allowing to resolve conflicts in the registry using random quorum of juries. It mainly evaluates evidence provided by Seekers who aim at disrupting 
-
-### Sybil
-A [Sybil](https://en.wikipedia.org/wiki/Sybil_attack) in PoH Registry could be considered any person or other entity that violates rule of one Human <-> one Entry mapping in order to gain some benefit, like:
-1. Gaining monetary value from owning multiple sources of UBI.
-2. Manipulating this or another DAO voting if defined by Quadratic Voting or similar approaches aimed at encouraging direct involvement more than delegated.
-3. Gaining an increased influence over Social Media integrating with the PoH Registry by manipulating its members opinions by normalizing certain viewpoints.
-4. Benefiting in another way from the Registry destruction or simply trolling / griefing it.
-
-In order for the registry to be viable, it must have builtin protections from such actors that will make these attacks expensive, slow and economically unfeasible to pull off at large scale and in longer time-frame.
-
-Common types of Sybils, include:
-1. Duplicate - multiple submissions of the same person pretending to be different people. The easiest one to discover due to availability of face-recognition software.
-2. Fake - A.I. Deep-Fakes. It's possible to Deep-Fake external Evidence, like a photo or a video with made-up faces.
-3. Puppet - it's also possible to bribe or force some real people to record a video on behalf of an Attacker. We must ensure to keep Applicants well-informed about benefits of PoH and UBI.
-
-The system should penalize Sybils and their Vouchers disproportionately more than benefits they could potentially gain. It should also account for the fact, that good fake detection software may not be available for some time even after the registration, therefore any security deposit should be permanent (bounty).
+Court is a mechanism allowing to resolve conflicts in the registry using random quorum of juries. It mainly evaluates evidence provided by Seekers who aim at disrupting
 
 #### Challenges
 We should come up with variety of challenges that could make certain Sybils less likely to be successful. An example, could be:
@@ -263,9 +236,9 @@ Suspected Fakes can be requested to record a video under conditions that usually
 These challenges should have cool downs, like 6 months and consecutive prosecution failures should increase required amount of time between challenges exponentially with some limit, like up to 4 years.
 
 #### Protect against honest mistakes
-A different approach should be considered when dealing with minor issues. Unless the application isn't fully inadmissible (griefing cases), minor issues, like mistake in spoken phrase or poor quality of video / audio, partially hidden face details, etc should be resolvable pre-trial with a guarantee of a tip.
+A different approach should be considered when dealing with minor issues. Unless the application isn't fully inadmissible (griefing cases), minor issues, like mistake in spoken phrase or poor quality of video / audio, partially hidden face details, etc. should be resolvable pre-trial with a guarantee of a tip.
 
-If a Seeker finds an issue with application, they open challenge the same way as usual and selects specific type of issue. Applicant may then choose to either agree with it or not. If the challenge is not acknowledged, it is directed to a court and Applicant may lose full amount of their deposit and not get registered. On the other hand, if the person agrees with the challenge, a 10% tip is secured on behalf of the challenger and Applicant may re-upload their Submission. The challenger may then Accept new submission or not. If challenger accepts it, the normal registration process is resumed, but if not, it ends up in the Court. It may take multiple rounds of pre-trial corrections, before all issues are resolved.
+If a Seeker finds an issue with application, they may decide to open a challenge the same way as usual and select specific type of issue. Applicant may then choose to either agree with it or not. If the challenge is not acknowledged, it is directed to a court and Applicant may lose full amount of their deposit and get removed. On the other hand, if the person agrees with the challenge, a 10% tip is secured on behalf of the challenger and Applicant may re-upload their Submission. The challenger may then Accept new submission or not. If the challenger accepts it as resolved, normal registration process is resumed. Otherwise, it ends up in Court. It may take multiple rounds of pre-trial corrections before all issues are resolved.
 
 Once the person successfully registers, all tips are redistributed from Applicants deposit to Seekers who found them. In those cases, it may take some time before Applicant starts accruing any spendable UBI, because the Deposit needs to be refilled first, and it always takes priority.
 
@@ -294,7 +267,7 @@ It may be a good idea to allow hiding jury identity, except Delegates, in order 
 Once there is a significant group (10k+?), we should be able to create language-specific filters to allow registering people who do not speak english or spanish. People who declare proficiency in given language should prove it.
 
 ## Multi-chain
-We should ensure that there is a single source - ethereum L1 seems like a good bet. Other chains, specifically L2s can run their own contracts, but should be orchestrated from Main Registry on L1 and push registrants originating in L2s back to L1. This way, mainnet can still set UBI parameters (deposit, etc) in single place and not spread it across multiple chains.
+We should ensure that there is a single source - ethereum L1 seems like a good bet. Other chains, specifically L2s can run their own contracts, but should be orchestrated from Main Registry on L1 and push registrants originating in L2s back to L1. This way, mainnet can still set UBI parameters, like target deposit, oracles, etc. in single place and not spread it across multiple chains.
 
 It also makes easier migrations of registrants in bulk in case there is an issue with L2 without need to re-register.
 
