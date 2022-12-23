@@ -691,6 +691,46 @@
         }
       }
     },
+    "lib/forge-std/src/interfaces/IERC20.sol": {
+      "lastModificationDate": 1671577910185,
+      "contentHash": "9a6c759490a6619eceebb2a1aab6fc43",
+      "sourceName": "lib/forge-std/src/interfaces/IERC20.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.6.2",
+      "artifacts": {
+        "IERC20": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "IERC20.sol/IERC20.json"
+        }
+      }
+    },
     "script/Counter.s.sol": {
       "lastModificationDate": 1671221430200,
       "contentHash": "0705c52104730a78aef4aa6694175c81",
@@ -787,8 +827,8 @@
       }
     },
     "src/ProofofHumanity.sol": {
-      "lastModificationDate": 1671222041086,
-      "contentHash": "d41d8cd98f00b204e9800998ecf8427e",
+      "lastModificationDate": 1671579179834,
+      "contentHash": "a9e9969899f49a67fc86e9ea17253c15",
       "sourceName": "src/ProofofHumanity.sol",
       "solcConfig": {
         "settings": {
@@ -818,8 +858,10 @@
           "libraries": {}
         }
       },
-      "imports": [],
-      "versionRequirement": null,
+      "imports": [
+        "lib/forge-std/src/interfaces/IERC20.sol"
+      ],
+      "versionRequirement": "^0.8.13",
       "artifacts": {
         "ProofofHumanity": {
           "0.8.17+commit.8df45f5f.Darwin.appleclang": "ProofofHumanity.sol/ProofofHumanity.json"
