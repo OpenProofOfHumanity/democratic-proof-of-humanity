@@ -1,7 +1,7 @@
 .DS_STORE
 /target
 out/
-cache
+cache/
 out.json
 .idea
 .vscode
