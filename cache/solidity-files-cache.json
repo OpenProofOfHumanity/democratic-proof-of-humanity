@@ -691,10 +691,10 @@
         }
       }
     },
-    "lib/forge-std/src/interfaces/IERC20.sol": {
-      "lastModificationDate": 1671577910185,
-      "contentHash": "9a6c759490a6619eceebb2a1aab6fc43",
-      "sourceName": "lib/forge-std/src/interfaces/IERC20.sol",
+    "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+      "lastModificationDate": 1671567101621,
+      "contentHash": "ad7c2d0af148c8f9f097d65deeb4da6b",
+      "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -724,7 +724,7 @@
         }
       },
       "imports": [],
-      "versionRequirement": ">=0.6.2",
+      "versionRequirement": "^0.8.0",
       "artifacts": {
         "IERC20": {
           "0.8.17+commit.8df45f5f.Darwin.appleclang": "IERC20.sol/IERC20.json"
@@ -827,8 +827,8 @@
       }
     },
     "src/ProofofHumanity.sol": {
-      "lastModificationDate": 1671579179834,
-      "contentHash": "a9e9969899f49a67fc86e9ea17253c15",
+      "lastModificationDate": 1672331881094,
+      "contentHash": "a9220b240e2c949a4a89fb17b9802a51",
       "sourceName": "src/ProofofHumanity.sol",
       "solcConfig": {
         "settings": {
@@ -859,12 +859,12 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/interfaces/IERC20.sol"
+        "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol"
       ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
-        "ProofofHumanity": {
-          "0.8.17+commit.8df45f5f.Darwin.appleclang": "ProofofHumanity.sol/ProofofHumanity.json"
+        "ProofOfHumanity": {
+          "0.8.17+commit.8df45f5f.Darwin.appleclang": "ProofofHumanity.sol/ProofOfHumanity.json"
         }
       }
     },
