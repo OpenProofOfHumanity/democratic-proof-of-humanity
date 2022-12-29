@@ -1,13 +1,11 @@
 # directories
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
-**/cache
-**/node_modules
-**/out
+yarn-error.log
+node_modules
+.DS_STORE
+
+# Foundry files
+cache
+out-via-ir
 
 # files
 *.env
@@ -17,7 +15,10 @@
 yarn-debug.log*
 yarn-error.log*
 
-# broadcasts
-!/broadcast
-/broadcast/*
-/broadcast/*/31337/
+# Keep related abi
+out/*/*
+!out/Greeter.sol/*
+
+# Keep the latest deployment only
+broadcast/*/*/*
+!broadcast/*/*/run-latest.json
