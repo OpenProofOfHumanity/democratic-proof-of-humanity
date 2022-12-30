@@ -6,10 +6,21 @@ import "../src/ProofOfHumanity.sol";
 import "./mocks/MockERC20.sol";
 
 contract TestContract is Test {
+    ProofOfHumanity public proofOfHumanity;
+    MockERC20 public mockToken;
     ErrorsTest test;
 
     function setUp() public {
+        proofOfHumanity = new ProofOfHumanity();
+        mockToken = new MockERC20();
         test = new ErrorsTest();
+    }
+
+    function testExample() public {
+      uint256 amount = 10e18;
+      mockToken.approve(address(proofOfHumanity), amount);
+      bool passed = proofOfHumanity.stake(amount, address(mockToken));
+      assertTrue(passed);
     }
 
     function testExpectArithmetic() public {
