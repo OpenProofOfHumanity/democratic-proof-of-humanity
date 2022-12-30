@@ -27,6 +27,12 @@ For more information read the [Protocol Specification](SPECIFICATION.md).
 
     Then, run `foundryup` in a new terminal session or after reloading your `PATH`.
 
+3.  Test Contract.
+
+    ```sh
+    forge test
+    ```
+    
 ## Deploy
 
 Project is currently under development.
