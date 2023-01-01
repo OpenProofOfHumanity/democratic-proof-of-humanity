@@ -12,7 +12,7 @@ contract TestContract is Test {
     MockERC20 public mockToken;
 
     function setUp() public {
-        proofOfHumanity = new ProofOfHumanity();
+        // proofOfHumanity = new ProofOfHumanity();
         mockToken = new MockERC20();
     }
 

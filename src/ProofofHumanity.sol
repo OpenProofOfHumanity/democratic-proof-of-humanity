@@ -9,7 +9,17 @@ error TransferFailed();
 
 contract ProofOfHumanity {
 
-  IProofOfHumanity public LegacyProofOfHumanity;
+  IProofOfHumanity public legacyProofOfHumanity;
+
+  /* Constants and immutable */
+  uint256 private constant RULING_OPTIONS = 2; // The amount of non 0 choices the arbitrator can give.
+  uint256 private constant AUTO_PROCESSED_VOUCH = 10; // The number of vouches that will be automatically processed when executing a request.
+  uint256 private constant FULL_REASONS_SET = 15; // Indicates that reasons' bitmap is full. 0b1111.
+  uint256 private constant MULTIPLIER_DIVISOR = 10000; // Divisor parameter for multipliers.
+  
+  bytes32 private DOMAIN_SEPARATOR; // The EIP-712 domainSeparator specific to this deployed instance. It is used to verify the IsHumanVoucher's signature.
+  bytes32 private constant IS_HUMAN_VOUCHER_TYPEHASH =
+      0xa9e3fa1df5c3dbef1e9cfb610fa780355a0b5e0acb0fa8249777ec973ca789dc; // The EIP-712 typeHash of IsHumanVoucher. keccak256("IsHumanVoucher(address vouchedSubmission,uint256 voucherExpirationTimestamp)").
 
   /* Enums */
 
@@ -172,4 +182,40 @@ contract ProofOfHumanity {
    */
   event ChallengeResolved(address indexed _submissionID, uint256 indexed _requestID, uint256 _challengeID);
 
+
+  /** @dev Constructor.
+   *  @param _proofOfHumanity The legacy Proof of Humanity contract. 
+   *  @param _submissionBaseDeposit The base deposit to make a request for a submission.
+   *  @param _submissionDuration Time in seconds during which the registered submission won't automatically lose its status.
+   *  @param _renewalPeriodDuration Value that defines the duration of submission's renewal period.
+   *  @param _challengePeriodDuration The time in seconds during which the request can be challenged.
+   *  @param _multipliers The array that contains fee stake multipliers to avoid 'stack too deep' error.
+   *  @param _requiredNumberOfVouches The number of vouches the submission has to have to pass from Vouching to PendingRegistration state.
+   */
+  constructor(
+      IProofOfHumanity _proofOfHumanity,
+      uint256 _submissionBaseDeposit,
+      uint64 _submissionDuration,
+      uint64 _renewalPeriodDuration,
+      uint64 _challengePeriodDuration,
+      uint256[3] memory _multipliers,
+      uint64 _requiredNumberOfVouches
+  ) {
+      governor = msg.sender;
+      legacyProofOfHumanity = _proofOfHumanity;
+      submissionBaseDeposit = _submissionBaseDeposit;
+      submissionDuration = _submissionDuration;
+      renewalPeriodDuration = _renewalPeriodDuration;
+      challengePeriodDuration = _challengePeriodDuration;
+      sharedStakeMultiplier = _multipliers[0];
+      winnerStakeMultiplier = _multipliers[1];
+      loserStakeMultiplier = _multipliers[2];
+      requiredNumberOfVouches = _requiredNumberOfVouches;
+
+      // EIP-712.
+      bytes32 DOMAIN_TYPEHASH = 0x8cad95687ba82c2ce50e74f7b754645e5117c3a5bec8151c0726d5857980a866; // keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)").
+      DOMAIN_SEPARATOR = keccak256(
+          abi.encode(DOMAIN_TYPEHASH, keccak256("Proof of Humanity"), block.chainid, address(this))
+      );
+  }
 }
