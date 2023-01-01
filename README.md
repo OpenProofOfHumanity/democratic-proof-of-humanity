@@ -29,6 +29,17 @@ For more information read the [Protocol Specification](SPECIFICATION.md).
 
 3.  Interact with Contract.
 
+    Copy the `.env.example` file into `.env` and set the appropriate values:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    ```bash
+    PRIVATE_KEY=# Enter the private key of the blockchain you will be using.
+    RPC_URL='https://{network}.infura.io/v3/{api_key}' # or alchemy URL.
+    ```
+
     * Build it: 
 
         ```sh
@@ -41,12 +52,9 @@ For more information read the [Protocol Specification](SPECIFICATION.md).
         ```
     * Deploy it:
 
-        Configure variables on an `.env` that includes `PRIVATE_KEY` and `RPC_URL` (check `.env_example` for more). 
-
         ```sh
         make deploy
         ```
-
     
 ## Deploy
 
