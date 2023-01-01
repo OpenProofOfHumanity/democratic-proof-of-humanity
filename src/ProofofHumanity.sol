@@ -184,7 +184,7 @@ contract ProofOfHumanity {
 
 
   /** @dev Constructor.
-   *  @param _proofOfHumanity The legacy Proof of Humanity contract. 
+   *  @param _legacyProofOfHumanity The legacy Proof of Humanity contract. 
    *  @param _submissionBaseDeposit The base deposit to make a request for a submission.
    *  @param _submissionDuration Time in seconds during which the registered submission won't automatically lose its status.
    *  @param _renewalPeriodDuration Value that defines the duration of submission's renewal period.
@@ -193,7 +193,7 @@ contract ProofOfHumanity {
    *  @param _requiredNumberOfVouches The number of vouches the submission has to have to pass from Vouching to PendingRegistration state.
    */
   constructor(
-      IProofOfHumanity _proofOfHumanity,
+      IProofOfHumanity _legacyProofOfHumanity,
       uint256 _submissionBaseDeposit,
       uint64 _submissionDuration,
       uint64 _renewalPeriodDuration,
@@ -202,7 +202,7 @@ contract ProofOfHumanity {
       uint64 _requiredNumberOfVouches
   ) {
       governor = msg.sender;
-      legacyProofOfHumanity = _proofOfHumanity;
+      legacyProofOfHumanity = _legacyProofOfHumanity;
       submissionBaseDeposit = _submissionBaseDeposit;
       submissionDuration = _submissionDuration;
       renewalPeriodDuration = _renewalPeriodDuration;

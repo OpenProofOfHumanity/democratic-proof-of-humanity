@@ -27,11 +27,26 @@ For more information read the [Protocol Specification](SPECIFICATION.md).
 
     Then, run `foundryup` in a new terminal session or after reloading your `PATH`.
 
-3.  Test Contract.
+3.  Interact with Contract.
 
-    ```sh
-    forge test
-    ```
+    * Build it: 
+
+        ```sh
+        make build
+        ```
+    * Test it: 
+
+        ```sh
+        make test
+        ```
+    * Deploy it:
+
+        Configure variables on an `.env` that includes `PRIVATE_KEY` and `RPC_URL` (check `.env_example` for more). 
+
+        ```sh
+        make deploy
+        ```
+
     
 ## Deploy
 
