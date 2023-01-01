@@ -24,6 +24,9 @@ update:; forge update
 # Builds
 build  :; forge clean && forge build --optimize --optimizer-runs 1000000
 
+#Test
+test:; forge test
+
 setup-yarn:
 	yarn 
 
@@ -31,4 +34,4 @@ local-node: setup-yarn
 	yarn hardhat node 
 
 deploy:
-	forge create StakeContract --private-key ${PRIVATE_KEY} # --rpc-url 
+	forge create ProofOfHumanity --private-key ${PRIVATE_KEY} # --rpc-url ${RPC_URL}
