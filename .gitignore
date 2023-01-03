@@ -1,8 +1,27 @@
-.DS_STORE
+# directories
+yarn-error.log
+node_modules
+
+# Foundry files
+cache
+out-via-ir
+
+# files
+*.env
+*.log
+.DS_Store
+.pnp.*
+yarn-debug.log*
+yarn-error.log*
+
+# Keep related abi
+out/*/*
+
+# Keep the latest deployment only
+broadcast/*/*/*
+!broadcast/*/*/run-latest.json
+
+# Previous
 /target
-out/
-cache/
-out.json
 .idea
 .vscode
-.env
