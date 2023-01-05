@@ -2,6 +2,7 @@
 pragma solidity 0.8.14;
 
 import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 contract POH_EIP712 is EIP712 {
 	bytes32 private constant _HUMANITY_VOUCHER_TYPEHASH =
