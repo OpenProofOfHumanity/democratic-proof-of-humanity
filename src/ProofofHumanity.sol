@@ -4,7 +4,7 @@ pragma solidity 0.8.14;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {IProofOfHumanity} from "./interfaces/IProofOfHumanity.sol";
-import {Signature, POH_EIP712} from "./PoH-EIP712.sol";
+import {Signature, POH_EIP712} from "./POH_EIP712.sol";
 
 error TransferFailed();
 
