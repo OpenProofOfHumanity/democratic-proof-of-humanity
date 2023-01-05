@@ -19,4 +19,18 @@ contract POH_EIP712 is EIP712 {
 	function DOMAIN_SEPARATOR() external view returns (bytes32) {
 		return _domainSeparatorV4();
 	}
+
+	function recoverVoucherSigner(
+		address vouchedHuman,
+		uint256 expirationTimestamp,
+		Signature calldata signature
+	) public view returns (address signer) {
+		bytes32 structHash = keccak256(abi.encode(_HUMANITY_VOUCHER_TYPEHASH, vouchedHuman, expirationTimestamp));
+
+		signer = _hashSigner(structHash, signature);
+	}
+
+	function _hashSigner(bytes32 structHash, Signature calldata signature) private view returns (address signer) {
+		return ECDSA.recover(_hashTypedDataV4(structHash), signature.v, signature.r, signature.s);
+	}
 }
