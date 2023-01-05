@@ -4,10 +4,11 @@ pragma solidity 0.8.14;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {IProofOfHumanity} from "./interfaces/IProofOfHumanity.sol";
+import {Signature, POH_EIP712} from "./POH_EIP712.sol";
 
 error TransferFailed();
 
-contract ProofOfHumanity {
+contract ProofOfHumanity is POH_EIP712 {
 	IProofOfHumanity public legacyProofOfHumanity;
 
 	/* Constants and immutable */
@@ -15,10 +16,6 @@ contract ProofOfHumanity {
 	uint256 private constant AUTO_PROCESSED_VOUCH = 10; // The number of vouches that will be automatically processed when executing a request.
 	uint256 private constant FULL_REASONS_SET = 15; // Indicates that reasons' bitmap is full. 0b1111.
 	uint256 private constant MULTIPLIER_DIVISOR = 10000; // Divisor parameter for multipliers.
-
-	bytes32 private DOMAIN_SEPARATOR; // The EIP-712 domainSeparator specific to this deployed instance. It is used to verify the IsHumanVoucher's signature.
-	bytes32 private constant IS_HUMAN_VOUCHER_TYPEHASH =
-		0xa9e3fa1df5c3dbef1e9cfb610fa780355a0b5e0acb0fa8249777ec973ca789dc; // The EIP-712 typeHash of IsHumanVoucher. keccak256("IsHumanVoucher(address vouchedSubmission,uint256 voucherExpirationTimestamp)").
 
 	/* Enums */
 
@@ -209,11 +206,5 @@ contract ProofOfHumanity {
 		winnerStakeMultiplier = _multipliers[1];
 		loserStakeMultiplier = _multipliers[2];
 		requiredNumberOfVouches = _requiredNumberOfVouches;
-
-		// EIP-712.
-		bytes32 DOMAIN_TYPEHASH = 0x8cad95687ba82c2ce50e74f7b754645e5117c3a5bec8151c0726d5857980a866; // keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)").
-		DOMAIN_SEPARATOR = keccak256(
-			abi.encode(DOMAIN_TYPEHASH, keccak256("Proof of Humanity"), block.chainid, address(this))
-		);
 	}
 }
