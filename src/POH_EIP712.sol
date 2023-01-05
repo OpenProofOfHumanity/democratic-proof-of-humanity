@@ -12,7 +12,7 @@ struct Signature {
 
 contract POH_EIP712 is EIP712 {
 	bytes32 private constant _HUMANITY_VOUCHER_TYPEHASH =
-		keccak256("HumanityVoucher(address vouchedHuman,uint256 expirationTimestamp)");
+		keccak256("HumanityVoucher(address vouchedHuman,uint256 deadline)");
 
 	constructor() EIP712("Proof of Humanity", "2") {}
 
@@ -22,10 +22,10 @@ contract POH_EIP712 is EIP712 {
 
 	function recoverVoucherSigner(
 		address vouchedHuman,
-		uint256 expirationTimestamp,
+		uint256 deadline,
 		Signature calldata signature
 	) public view returns (address signer) {
-		bytes32 structHash = keccak256(abi.encode(_HUMANITY_VOUCHER_TYPEHASH, vouchedHuman, expirationTimestamp));
+		bytes32 structHash = keccak256(abi.encode(_HUMANITY_VOUCHER_TYPEHASH, vouchedHuman, deadline));
 
 		signer = _hashSigner(structHash, signature);
 	}
