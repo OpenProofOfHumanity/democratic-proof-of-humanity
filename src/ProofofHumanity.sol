@@ -34,6 +34,7 @@ contract ProofOfHumanity is POH_EIP712 {
 	}
 
 	enum Status {
+    None, 
 		Vouching, // Request requires vouches / funding to advance to the next state. Should not be in this state for revokal requests.
 		Resolving, // Request is resolving and can be challenged within the time limit.
 		Disputed, // Request has been challenged.
@@ -178,6 +179,8 @@ contract ProofOfHumanity is POH_EIP712 {
 	 */
 	event ChallengeResolved(address indexed _submissionID, uint256 indexed _requestID, uint256 _challengeID);
 
+
+
 	/** @dev Constructor.
 	 *  @param _legacyProofOfHumanity The legacy Proof of Humanity contract.
 	 *  @param _submissionBaseDeposit The base deposit to make a request for a submission.
@@ -207,4 +210,46 @@ contract ProofOfHumanity is POH_EIP712 {
 		loserStakeMultiplier = _multipliers[2];
 		requiredNumberOfVouches = _requiredNumberOfVouches;
 	}
+
+  /* External and Public */
+
+  // ************************ //
+  // *      Governance      * //
+  // ************************ //
+
+
+
+    // ************************ //
+    // *       Requests       * //
+    // ************************ //
+
+    /** @dev Make a request to add a new entry to the list. Paying the full deposit right away is not required as it can be crowdfunded later.
+     *  @param _evidence A link to evidence using its URI.
+     *  @param _name The name of the submitter. This parameter is for Subgraph only and it won't be used in this function.
+     */
+    function addSubmission(string calldata _evidence, string calldata _name) external payable {
+        Submission storage submission = submissions[msg.sender];
+        require(!submission.registered && submission.status == Status.None, "Wrong status");
+        if (submission.requests.length == 0) {
+            submission.index = uint64(submissionCounter);
+            submissionCounter++;
+        }
+        submission.status = Status.Vouching;
+        emit AddSubmission(msg.sender, submission.requests.length);
+        requestRegistration(msg.sender, _evidence);
+    }
+
+
+    /* Internal */
+
+    /** @dev Make a request to register/reapply the submission. Paying the full deposit right away is not required as it can be crowdfunded later.
+     *  @param _submissionID The address of the submission.
+     *  @param _evidence A link to evidence using its URI.
+     */
+    function requestRegistration(address _submissionID, string memory _evidence) internal {
+        Submission storage submission = submissions[_submissionID];
+        submission.requests.push();
+        Request storage request = submission.requests[submission.requests.length - 1];
+    }
+
 }
