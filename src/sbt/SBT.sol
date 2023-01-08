@@ -44,6 +44,10 @@ contract SBT is ISBT, ERC721 {
 		return address(_metadata);
 	}
 
+	function isHuman(uint256 humanId) external view returns (bool) {
+		return _exists(humanId);
+	}
+
 	// Non open transferability
 
 	function transferFrom(address, address, uint256) public virtual override(ERC721, IERC721) {
