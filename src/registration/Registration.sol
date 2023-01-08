@@ -4,12 +4,15 @@ pragma solidity 0.8.17;
 import {IRegistration} from "./IRegistration.sol";
 import {ISBT} from "../sbt/ISBT.sol";
 import {IStage} from "../IStage.sol";
+import {IRegistrationVerification} from "./verification/IRegistrationVerification.sol";
 
-import {Submission, RequestStatus} from "../data-structures/Submission.sol";
+import {Submission, Submissions, RequestStatus} from "../data-structures/Submissions.sol";
 
 import {AlreadyHuman, AlreadySubmitted, IncompleteVouching, IncompleteFunding} from "../data-structures/Errors.sol";
 
 contract Registration is IRegistration {
+	using Submissions for Submission;
+
 	event AddSubmission(uint256 humanId, address submitter, string evidence);
 	event PendingVerification(uint256 humanId);
 
@@ -20,11 +23,13 @@ contract Registration is IRegistration {
 
 	IStage private _vouching;
 	IStage private _funding;
+	IRegistrationVerification private _verification;
 
-	constructor(address token, address vouching, address funding) {
+	constructor(address token, address vouching, address funding, address verification) {
 		_sbt = ISBT(token);
 		_vouching = IStage(vouching);
 		_funding = IStage(funding);
+		_verification = IRegistrationVerification(verification);
 	}
 
 	function addSubmission(string calldata evidence) external {
@@ -52,6 +57,9 @@ contract Registration is IRegistration {
 	function moveToVerification(uint256 requestId) external {
 		if (!_vouching.complete(requestId)) revert IncompleteVouching(requestId);
 		if (!_funding.complete(requestId)) revert IncompleteFunding(requestId);
+
+		_submissions[requestId].updateStatus(RequestStatus.PendingVerification);
+		_verification.startProcess(requestId);
 
 		emit PendingVerification(requestId);
 	}

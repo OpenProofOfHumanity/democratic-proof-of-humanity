@@ -10,3 +10,9 @@ struct Submission {
 	string evidence;
 	RequestStatus status;
 }
+
+library Submissions {
+	function updateStatus(Submission storage self, RequestStatus newStatus) internal {
+		self.status = newStatus;
+	}
+}
