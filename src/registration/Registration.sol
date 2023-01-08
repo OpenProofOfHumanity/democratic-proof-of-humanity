@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
+// interfaces
 import {IRegistration} from "./IRegistration.sol";
 import {ISBT} from "../sbt/ISBT.sol";
 import {IStage} from "../IStage.sol";
 import {IRegistrationVerification} from "./verification/IRegistrationVerification.sol";
 
+// structs
 import {RegistrationRequest, RequestStatus} from "../data-structures/RegistrationRequest.sol";
 
+// errors
 import {AlreadyHuman, AlreadySubmitted, IncompleteVouching, IncompleteFunding, IncompleteVerification, InvalidCurrentStatus} from "../data-structures/Errors.sol";
 
 contract Registration is IRegistration {
@@ -80,6 +83,8 @@ contract Registration is IRegistration {
 	function claimHumanityID(uint256 requestId) external currentStatus(requestId, RequestStatus.PendingVerification) {
 		if (!_verification.complete(requestId)) revert IncompleteVerification(requestId);
 
-		_updateStatus(requestId, RequestStatus.PendingVerification);
+		_updateStatus(requestId, RequestStatus.Verified);
+
+		_sbt.mint(requestId, _requests[requestId].initialAddress);
 	}
 }
