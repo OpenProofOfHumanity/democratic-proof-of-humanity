@@ -3,6 +3,8 @@ pragma solidity 0.8.17;
 
 import {IRegistration} from "./IRegistration.sol";
 import {ISBT} from "../sbt/ISBT.sol";
+import {IStage} from "../IStage.sol";
+
 import {Submission, RequestStatus} from "../data-structures/Submission.sol";
 
 import {AlreadyHuman, AlreadySubmitted} from "../data-structures/Errors.sol";
@@ -15,8 +17,13 @@ contract Registration is IRegistration {
 
 	ISBT private _sbt;
 
-	constructor(address token) {
+	IStage private _vouching;
+	IStage private _funding;
+
+	constructor(address token, address vouching, address funding) {
 		_sbt = ISBT(token);
+		_vouching = IStage(vouching);
+		_funding = IStage(funding);
 	}
 
 	function addSubmission(string calldata evidence) external {
