@@ -3,7 +3,7 @@ pragma solidity 0.8.17;
 
 enum HumanityStatus {
 	None,
-	Submitted, // vouching and funding
+	VouchingAndFunding, // vouching and funding
 	Verification, // can be challenged
 	Denied, // rejected submission
 	Verified, // approved submission

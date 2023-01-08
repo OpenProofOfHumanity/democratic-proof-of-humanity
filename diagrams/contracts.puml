@@ -10,20 +10,20 @@ interface IERC721Upgradeable
 
 ' enums
 
-enum GlobalStatus {
+enum HumanityStatus {
     None
     VouchingAndFunding
-    Arbitration
-    Revoked
-    Approved
+    Verification
+    Denied
+    Verified
+    RecoveryRequested
 }
 
-enum ArbitrationStatus {
+enum VerificationStatus {
     None
-    Clean
-    Challenged
-    Revoked
-    Approved
+    Pending
+    Rejected
+    Verified
 }
 
 ' interfaces / abstract classes
@@ -68,8 +68,8 @@ interface IRegistrationFunding {
 
     fundSubmission(humanId, amount)
 }
-interface IRegistrationArbitration {
-    arbitrationStatus(humanId) -> ArbitrationStatus
+interface IRegistrationVerification {
+    VerificationStatus(humanId) -> VerificationStatus
     approvedSubmission(humanId) -> bool
 }
 interface IRecoveryVouching {
@@ -87,8 +87,8 @@ interface IRecoveryFunding {
 
     fundSubmission(requestId, amount)
 }
-interface IRecoveryArbitration {
-    arbitrationStatus(humanId) -> ArbitrationStatus
+interface IRecoveryVerification {
+    VerificationStatus(humanId) -> VerificationStatus
     approvedRecovery(humanId) -> bool
 }
 
@@ -101,11 +101,11 @@ protocol Recovery_Proxy
 
 protocol RegistrationVouching_Proxy
 protocol RegistrationFunding_Proxy
-protocol RegistrationArbitration_Proxy
+protocol RegistrationVerification_Proxy
 
 protocol RecoveryVouching_Proxy
 protocol RecoveryFunding_Proxy
-protocol RecoveryArbitration_Proxy
+protocol RecoveryVerification_Proxy
 
 ' classes
 
@@ -126,7 +126,7 @@ class RegistrationVouching_Imp {
 class RegistrationFunding_Imp {
     (humanId => amount) funded
 }
-class RegistrationArbitration_Imp {
+class RegistrationVerification_Imp {
     TBD
 }
 
@@ -136,7 +136,7 @@ class RecoveryVouching_Imp {
 class RecoveryFunding_Imp {
     (humanId => amount) funded
 }
-class RecoveryArbitration_Imp {
+class RecoveryVerification_Imp {
     TBD
 }
 
@@ -162,11 +162,11 @@ Metadata_Imp .l.|> IMetadata
 
 RegistrationVouching_Imp .l.|> IRegistrationVouching
 RegistrationFunding_Imp .l.|> IRegistrationFunding
-RegistrationArbitration_Imp .l.|> IRegistrationArbitration
+RegistrationVerification_Imp .l.|> IRegistrationVerification
 
 RecoveryVouching_Imp .l.|> IRecoveryVouching
 RecoveryFunding_Imp .l.|> IRecoveryFunding
-RecoveryArbitration_Imp .l.|> IRecoveryArbitration
+RecoveryVerification_Imp .l.|> IRecoveryVerification
 
 
 ' proxies implementations
@@ -178,11 +178,11 @@ Recovery_Proxy --> Recovery_Imp : delegatecall
 
 RegistrationVouching_Proxy --> RegistrationVouching_Imp : delegatecall
 RegistrationFunding_Proxy --> RegistrationFunding_Imp : delegatecall
-RegistrationArbitration_Proxy --> RegistrationArbitration_Imp : delegatecall
+RegistrationVerification_Proxy --> RegistrationVerification_Imp : delegatecall
 
 RecoveryVouching_Proxy --> RecoveryVouching_Imp : delegatecall
 RecoveryFunding_Proxy --> RecoveryFunding_Imp : delegatecall
-RecoveryArbitration_Proxy --> RecoveryArbitration_Imp : delegatecall
+RecoveryVerification_Proxy --> RecoveryVerification_Imp : delegatecall
 
 ' composition
 
@@ -191,11 +191,11 @@ SBT_Imp --* Metadata_Imp : call
 
 Registration_Imp --* RegistrationVouching_Proxy : call
 Registration_Imp --* RegistrationFunding_Proxy : call
-Registration_Imp --* RegistrationArbitration_Proxy : call
+Registration_Imp --* RegistrationVerification_Proxy : call
 
 Recovery_Imp --* RecoveryVouching_Proxy : call
 Recovery_Imp --* RecoveryFunding_Proxy : call
-Recovery_Imp --* RecoveryArbitration_Proxy : call
+Recovery_Imp --* RecoveryVerification_Proxy : call
 
 ' hide @unlinked
 
