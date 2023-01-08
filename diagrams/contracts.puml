@@ -11,20 +11,28 @@ interface IERC721Upgradeable
 ' enums
 
 enum HumanityStatus {
-    None
-    VouchingAndFunding
-    Verification
-    Denied
-    Verified
+	None
+	Verified
     RecoveryRequested
 }
 
-enum VerificationStatus {
-    None
-    Pending
-    Rejected
-    Verified
+
+enum RequestStatus {
+	None
+	VouchingAndFunding
+	Verification
+	Denied
+	Verified
 }
+
+enum VerificationStatus {
+	None
+	Pending
+	Rejected
+	Verified
+}
+
+
 
 ' interfaces / abstract classes
 
