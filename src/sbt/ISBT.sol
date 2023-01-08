@@ -14,5 +14,5 @@ interface ISBT is IERC721 {
 
 	function updateMetadataImplementation(address _contract) external;
 
-	function isHuman(uint256 humanId) external view returns (bool)
+	function isHuman(uint256 humanId) external view returns (bool);
 }

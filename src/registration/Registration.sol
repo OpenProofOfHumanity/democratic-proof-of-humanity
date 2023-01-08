@@ -5,6 +5,8 @@ import {IRegistration} from "./IRegistration.sol";
 import {ISBT} from "../sbt/ISBT.sol";
 import {Submission, RequestStatus} from "../data-structures/Submission.sol";
 
+import {AlreadyHuman} from "../data-structures/Errors.sol";
+
 contract Registration is IRegistration {
 	Submission[] private _submissions;
 
@@ -19,6 +21,6 @@ contract Registration is IRegistration {
 	}
 
 	function _addSubmission(address initialAddress, string calldata evidence) private {
-		if (_sbt.balanceOf(initialAddress) != 0) revert();
+		if (_sbt.balanceOf(initialAddress) != 0) revert AlreadyHuman(initialAddress);
 	}
 }

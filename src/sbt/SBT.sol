@@ -6,8 +6,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ISBT} from "./ISBT.sol";
 import {IMetadata} from "./metadata/IMetadata.sol";
 
-error NotHuman();
-error UnauthorizedTransfer();
+import {NotHumanID, UnauthorizedTransfer} from "../data-structures/Errors.sol";
 
 contract SBT is ISBT, ERC721 {
 	IMetadata private _metadata;
@@ -32,7 +31,7 @@ contract SBT is ISBT, ERC721 {
 	}
 
 	function tokenURI(uint256 humanId) public view override returns (string memory) {
-		if (!_exists(humanId)) revert NotHuman();
+		if (!_exists(humanId)) revert NotHumanID(humanId);
 		return _metadata.tokenURI(humanId);
 	}
 
