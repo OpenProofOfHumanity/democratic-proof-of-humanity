@@ -8,3 +8,6 @@ error AlreadyHuman(address human);
 error AlreadySubmitted(address submitter);
 
 error UnauthorizedTransfer();
+
+error VouchingIncomplete(uint256 requestId);
+error FundingIncomplete(uint256 requestId);
