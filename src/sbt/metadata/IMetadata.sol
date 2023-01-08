@@ -5,4 +5,6 @@ interface IMetadata {
 	function tokenURI(uint256 humanId) external view returns (string memory);
 
 	function contractURI() external view returns (string memory);
+
+	function updateBaseURI(string calldata newBaseURI) external;
 }
