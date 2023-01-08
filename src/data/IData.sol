@@ -5,4 +5,6 @@ import {HumanityStatus} from "../data-structures/HumanityStatus.sol";
 
 interface IData {
 	function statusOf(uint256 humanId) external view returns (HumanityStatus);
+
+	function updateStatus(uint256 humanId, HumanityStatus newStatus) external;
 }
