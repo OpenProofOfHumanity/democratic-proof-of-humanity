@@ -6,13 +6,11 @@ import {ISBT} from "../sbt/ISBT.sol";
 import {IStage} from "../IStage.sol";
 import {IRegistrationVerification} from "./verification/IRegistrationVerification.sol";
 
-import {RegistrationRequest, RegistrationRequests, RequestStatus} from "../data-structures/RegistrationRequest.sol";
+import {RegistrationRequest, RequestStatus} from "../data-structures/RegistrationRequest.sol";
 
-import {AlreadyHuman, AlreadySubmitted, IncompleteVouching, IncompleteFunding} from "../data-structures/Errors.sol";
+import {AlreadyHuman, AlreadySubmitted, IncompleteVouching, IncompleteFunding, IncompleteVerification, InvalidCurrentStatus} from "../data-structures/Errors.sol";
 
 contract Registration is IRegistration {
-	using RegistrationRequests for RegistrationRequest;
-
 	event RegistrationRequested(uint256 humanId, address submitter, string evidence);
 	event PendingVerification(uint256 humanId);
 
@@ -24,6 +22,12 @@ contract Registration is IRegistration {
 	IStage private _vouching;
 	IStage private _funding;
 	IRegistrationVerification private _verification;
+
+	modifier currentStatus(uint256 requestId, RequestStatus expectedStatus) {
+		if (statusOf(requestId) != expectedStatus)
+			revert InvalidCurrentStatus(requestId, statusOf(requestId), expectedStatus);
+		_;
+	}
 
 	constructor(address token, address vouching, address funding, address verification) {
 		_sbt = ISBT(token);
@@ -54,13 +58,28 @@ contract Registration is IRegistration {
 		emit RegistrationRequested(_humanId, _requester, _evidence);
 	}
 
-	function moveToVerification(uint256 requestId) external {
+	function _updateStatus(uint256 _requestId, RequestStatus _newStatus) private {
+		_requests[_requestId].status = _newStatus;
+	}
+
+	function statusOf(uint256 _requestId) public view returns (RequestStatus) {
+		return _requests[_requestId].status;
+	}
+
+	function moveToVerification(uint256 requestId) external currentStatus(requestId, RequestStatus.VouchingAndFunding) {
 		if (!_vouching.complete(requestId)) revert IncompleteVouching(requestId);
 		if (!_funding.complete(requestId)) revert IncompleteFunding(requestId);
 
-		_requests[requestId].updateStatus(RequestStatus.PendingVerification);
 		_verification.startProcess(requestId);
 
+		_updateStatus(requestId, RequestStatus.PendingVerification);
+
 		emit PendingVerification(requestId);
+	}
+
+	function claimHumanityID(uint256 requestId) external currentStatus(requestId, RequestStatus.PendingVerification) {
+		if (!_verification.complete(requestId)) revert IncompleteVerification(requestId);
+
+		_updateStatus(requestId, RequestStatus.PendingVerification);
 	}
 }

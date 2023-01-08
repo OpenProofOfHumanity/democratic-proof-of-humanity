@@ -11,8 +11,8 @@ struct RegistrationRequest {
 	RequestStatus status;
 }
 
-library RegistrationRequests {
-	function updateStatus(RegistrationRequest storage self, RequestStatus newStatus) internal {
-		self.status = newStatus;
-	}
-}
+// library RegistrationRequests {
+// 	function updateStatus(RegistrationRequest storage self, RequestStatus newStatus) internal {
+// 		self.status = newStatus;
+// 	}
+// }
