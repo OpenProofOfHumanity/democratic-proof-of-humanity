@@ -3,16 +3,16 @@ pragma solidity 0.8.17;
 
 import {RequestStatus} from "./RequestStatus.sol";
 
-struct Submission {
+struct RegistrationRequest {
 	address initialAddress;
-	uint256 submissionTimestamp;
+	uint256 requestTimestamp;
 	uint256 pendingVerificationFrom;
 	string evidence;
 	RequestStatus status;
 }
 
-library Submissions {
-	function updateStatus(Submission storage self, RequestStatus newStatus) internal {
+library RegistrationRequests {
+	function updateStatus(RegistrationRequest storage self, RequestStatus newStatus) internal {
 		self.status = newStatus;
 	}
 }

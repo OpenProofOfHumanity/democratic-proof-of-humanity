@@ -6,18 +6,18 @@ import {ISBT} from "../sbt/ISBT.sol";
 import {IStage} from "../IStage.sol";
 import {IRegistrationVerification} from "./verification/IRegistrationVerification.sol";
 
-import {Submission, Submissions, RequestStatus} from "../data-structures/Submissions.sol";
+import {RegistrationRequest, RegistrationRequests, RequestStatus} from "../data-structures/RegistrationRequest.sol";
 
 import {AlreadyHuman, AlreadySubmitted, IncompleteVouching, IncompleteFunding} from "../data-structures/Errors.sol";
 
 contract Registration is IRegistration {
-	using Submissions for Submission;
+	using RegistrationRequests for RegistrationRequest;
 
-	event AddSubmission(uint256 humanId, address submitter, string evidence);
+	event RegistrationRequested(uint256 humanId, address submitter, string evidence);
 	event PendingVerification(uint256 humanId);
 
-	Submission[] private _submissions;
-	mapping(address => bool) _submitted;
+	RegistrationRequest[] private _requests;
+	mapping(address => bool) _requested;
 
 	ISBT private _sbt;
 
@@ -32,33 +32,33 @@ contract Registration is IRegistration {
 		_verification = IRegistrationVerification(verification);
 	}
 
-	function addSubmission(string calldata evidence) external {
-		_addSubmission(msg.sender, evidence);
+	function requestRegistration(string calldata evidence) external {
+		_requestRegistration(msg.sender, evidence);
 	}
 
-	function _addSubmission(address _submitter, string calldata _evidence) private {
-		if (_sbt.balanceOf(_submitter) != 0) revert AlreadyHuman(_submitter);
-		if (_submitted[_submitter]) revert AlreadySubmitted(_submitter);
+	function _requestRegistration(address _requester, string calldata _evidence) private {
+		if (_sbt.balanceOf(_requester) != 0) revert AlreadyHuman(_requester);
+		if (_requested[_requester]) revert AlreadySubmitted(_requester);
 
-		Submission storage _submission = _submissions.push();
-		uint256 _humanId = _submissions.length - 1;
+		RegistrationRequest storage _request = _requests.push();
+		uint256 _humanId = _requests.length - 1;
 
-		_submission.initialAddress = _submitter;
-		_submission.submissionTimestamp = block.timestamp;
-		// _submission. pendingVerificationFrom -> default: 0
-		_submission.evidence = _evidence;
-		_submission.status = RequestStatus.VouchingAndFunding;
+		_request.initialAddress = _requester;
+		_request.submissionTimestamp = block.timestamp;
+		// _request. pendingVerificationFrom -> default: 0
+		_request.evidence = _evidence;
+		_request.status = RequestStatus.VouchingAndFunding;
 
-		_submitted[_submitter] = true;
+		_requested[_requester] = true;
 
-		emit AddSubmission(_humanId, _submitter, _evidence);
+		emit RegistrationRequested(_humanId, _requester, _evidence);
 	}
 
 	function moveToVerification(uint256 requestId) external {
 		if (!_vouching.complete(requestId)) revert IncompleteVouching(requestId);
 		if (!_funding.complete(requestId)) revert IncompleteFunding(requestId);
 
-		_submissions[requestId].updateStatus(RequestStatus.PendingVerification);
+		_requests[requestId].updateStatus(RequestStatus.PendingVerification);
 		_verification.startProcess(requestId);
 
 		emit PendingVerification(requestId);
