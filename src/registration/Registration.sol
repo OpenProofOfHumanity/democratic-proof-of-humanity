@@ -44,7 +44,7 @@ contract Registration is IRegistration {
 		uint256 _humanId = _requests.length - 1;
 
 		_request.initialAddress = _requester;
-		_request.submissionTimestamp = block.timestamp;
+		_request.requestTimestamp = block.timestamp;
 		// _request. pendingVerificationFrom -> default: 0
 		_request.evidence = _evidence;
 		_request.status = RequestStatus.VouchingAndFunding;
