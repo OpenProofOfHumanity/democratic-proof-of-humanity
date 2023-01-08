@@ -7,4 +7,10 @@ interface ISBT is IERC721 {
 	function mint(uint256 humanId, address initialAddress) external;
 
 	function transfer(uint256 humanId, address newAddress) external;
+
+	function contractURI() external view returns (string memory);
+
+	function metadataContract() external view returns (address);
+
+	function updateMetadataImplementation(address _contract) external;
 }
