@@ -14,5 +14,11 @@ contract Registration is IRegistration {
 		_sbt = ISBT(token);
 	}
 
-	function addSubmission(string memory evidence) external {}
+	function addSubmission(string calldata evidence) external {
+		_addSubmission(msg.sender, evidence);
+	}
+
+	function _addSubmission(address initialAddress, string calldata evidence) private {
+		if (_sbt.balanceOf(initialAddress) != 0) revert();
+	}
 }
