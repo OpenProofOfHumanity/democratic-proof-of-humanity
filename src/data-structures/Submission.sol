@@ -6,7 +6,7 @@ import {RequestStatus} from "./RequestStatus.sol";
 struct Submission {
 	address initialAddress;
 	uint256 submissionTimestamp;
-	uint256 pendingFrom;
+	uint256 pendingVerificationFrom;
 	string evidence;
 	RequestStatus status;
 }

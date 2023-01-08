@@ -5,5 +5,6 @@ error NotHumanID(uint256 humanId);
 error NotHumanAddress(address human);
 
 error AlreadyHuman(address human);
+error AlreadySubmitted(address submitter);
 
 error UnauthorizedTransfer();
