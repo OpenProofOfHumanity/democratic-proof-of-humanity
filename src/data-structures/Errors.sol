@@ -9,5 +9,5 @@ error AlreadySubmitted(address submitter);
 
 error UnauthorizedTransfer();
 
-error VouchingIncomplete(uint256 requestId);
-error FundingIncomplete(uint256 requestId);
+error IncompleteVouching(uint256 requestId);
+error IncompleteFunding(uint256 requestId);

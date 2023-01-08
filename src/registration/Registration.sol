@@ -7,10 +7,11 @@ import {IStage} from "../IStage.sol";
 
 import {Submission, RequestStatus} from "../data-structures/Submission.sol";
 
-import {AlreadyHuman, AlreadySubmitted} from "../data-structures/Errors.sol";
+import {AlreadyHuman, AlreadySubmitted, IncompleteVouching, IncompleteFunding} from "../data-structures/Errors.sol";
 
 contract Registration is IRegistration {
 	event AddSubmission(uint256 humanId, address submitter, string evidence);
+	event PendingVerification(uint256 humanId);
 
 	Submission[] private _submissions;
 	mapping(address => bool) _submitted;
@@ -46,5 +47,12 @@ contract Registration is IRegistration {
 		_submitted[_submitter] = true;
 
 		emit AddSubmission(_humanId, _submitter, _evidence);
+	}
+
+	function moveToVerification(uint256 requestId) external {
+		if (!_vouching.complete(requestId)) revert IncompleteVouching(requestId);
+		if (!_funding.complete(requestId)) revert IncompleteFunding(requestId);
+
+		emit PendingVerification(requestId);
 	}
 }
