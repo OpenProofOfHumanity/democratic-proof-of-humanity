@@ -9,6 +9,10 @@ contract Metadata is IMetadata {
 
 	string private _baseURI;
 
+	constructor(string memory _initialBaseURI) {
+		_baseURI = _initialBaseURI;
+	}
+
 	function tokenURI(uint256 humanId) external view returns (string memory) {
 		return string(abi.encodePacked(_baseURI, humanId.toString(), ".json"));
 	}
