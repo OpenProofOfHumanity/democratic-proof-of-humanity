@@ -1,0 +1,202 @@
+@startuml POH_V2
+
+' using "protocol" (P) for proxy
+
+left to right direction
+
+' libraries
+
+interface IERC721Upgradeable
+
+' enums
+
+enum GlobalStatus {
+    None
+    VouchingAndFunding
+    Arbitration
+    Revoked
+    Approved
+}
+
+enum ArbitrationStatus {
+    None
+    Clean
+    Challenged
+    Revoked
+    Approved
+}
+
+' interfaces / abstract classes
+
+interface IData {
+    statusOf(humanId)
+}
+interface ISBT {
+    mint(humanId) onlyRegistrationContract
+    updateOwner(humanId, address) onlyRecoveryContract
+}
+ISBT -l-|> IERC721Upgradeable
+interface IRegistration {
+    addSumbmission(...)
+    processSubmission(...)
+}
+interface IRecovery {
+    requestRecovery(...)
+    processRecovery(...)
+}
+
+interface IOwnership {
+    ownerOf(tokenId) -> address
+}
+interface IMetadata {
+    tokenURI(tokenId) -> string
+    contractURI() -> string
+}
+
+interface IRegistrationVouching {
+    vouchersAmountNeeded() -> uint256
+    vouchersAmount(humanId) -> uint256
+    vouchersAddresses(humanId) -> address[]
+    vouchingCompleted(humanId) -> bool
+
+    vouch(humanId)
+}
+interface IRegistrationFunding {
+    fundingAmountNeeded() -> uint256
+    fundingReceived(humanId) -> uint256
+    fundingCompleted(humanId) -> bool
+
+    fundSubmission(humanId, amount)
+}
+interface IRegistrationArbitration {
+    arbitrationStatus(humanId) -> ArbitrationStatus
+    approvedSubmission(humanId) -> bool
+}
+interface IRecoveryVouching {
+    vouchersAmountNeeded() -> uint256
+    vouchersAmount(requestId) -> uint256
+    vouchersAddresses(requestId) -> address[]
+    vouchingCompleted(requestId) -> bool
+
+    vouch(humanId)
+}
+interface IRecoveryFunding {
+    fundingAmountNeeded() -> uint256
+    fundingReceived(requestId) -> uint256
+    fundingCompleted(requestId) -> bool
+
+    fundSubmission(requestId, amount)
+}
+interface IRecoveryArbitration {
+    arbitrationStatus(humanId) -> ArbitrationStatus
+    approvedRecovery(humanId) -> bool
+}
+
+' proxies
+
+protocol Data_Proxy
+protocol SBT_Proxy
+protocol Registration_Proxy
+protocol Recovery_Proxy
+
+protocol RegistrationVouching_Proxy
+protocol RegistrationFunding_Proxy
+protocol RegistrationArbitration_Proxy
+
+protocol RecoveryVouching_Proxy
+protocol RecoveryFunding_Proxy
+protocol RecoveryArbitration_Proxy
+
+' classes
+
+class Data_Imp {
+    (humanId => GlobalStatus) status
+}
+class SBT_Imp
+class Registration_Imp {
+    (humanId => Submission) submissions
+}
+class Recovery_Imp {
+    (requestId => Request) requests
+}
+
+class RegistrationVouching_Imp {
+    (humanId => address[]) vouchers
+}
+class RegistrationFunding_Imp {
+    (humanId => amount) funded
+}
+class RegistrationArbitration_Imp {
+    TBD
+}
+
+class RecoveryVouching_Imp {
+    (humanId => address[]) vouchers
+}
+class RecoveryFunding_Imp {
+    (humanId => amount) funded
+}
+class RecoveryArbitration_Imp {
+    TBD
+}
+
+class Ownership_Imp
+class Metadata_Imp
+
+' POH
+object POH
+POH --> Data_Proxy
+POH --> SBT_Proxy
+POH --> Registration_Proxy
+POH --> Recovery_Proxy
+
+' interfaces implementations
+
+Data_Imp .l.|> IData
+SBT_Imp .l.|> ISBT
+Registration_Imp .l.|> IRegistration
+Recovery_Imp .l.|> IRecovery
+
+Ownership_Imp .l.|> IOwnership
+Metadata_Imp .l.|> IMetadata
+
+RegistrationVouching_Imp .l.|> IRegistrationVouching
+RegistrationFunding_Imp .l.|> IRegistrationFunding
+RegistrationArbitration_Imp .l.|> IRegistrationArbitration
+
+RecoveryVouching_Imp .l.|> IRecoveryVouching
+RecoveryFunding_Imp .l.|> IRecoveryFunding
+RecoveryArbitration_Imp .l.|> IRecoveryArbitration
+
+
+' proxies implementations
+
+Data_Proxy --> Data_Imp : delegatecall
+SBT_Proxy --> SBT_Imp : delegatecall
+Registration_Proxy --> Registration_Imp : delegatecall
+Recovery_Proxy --> Recovery_Imp : delegatecall
+
+RegistrationVouching_Proxy --> RegistrationVouching_Imp : delegatecall
+RegistrationFunding_Proxy --> RegistrationFunding_Imp : delegatecall
+RegistrationArbitration_Proxy --> RegistrationArbitration_Imp : delegatecall
+
+RecoveryVouching_Proxy --> RecoveryVouching_Imp : delegatecall
+RecoveryFunding_Proxy --> RecoveryFunding_Imp : delegatecall
+RecoveryArbitration_Proxy --> RecoveryArbitration_Imp : delegatecall
+
+' composition
+
+SBT_Imp --* Ownership_Imp : call
+SBT_Imp --* Metadata_Imp : call
+
+Registration_Imp --* RegistrationVouching_Proxy : call
+Registration_Imp --* RegistrationFunding_Proxy : call
+Registration_Imp --* RegistrationArbitration_Proxy : call
+
+Recovery_Imp --* RecoveryVouching_Proxy : call
+Recovery_Imp --* RecoveryFunding_Proxy : call
+Recovery_Imp --* RecoveryArbitration_Proxy : call
+
+' hide @unlinked
+
+@enduml
