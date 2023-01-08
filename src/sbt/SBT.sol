@@ -2,10 +2,12 @@
 pragma solidity 0.8.17;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ISBT} from "./ISBT.sol";
 import {IMetadata} from "./metadata/IMetadata.sol";
 
 error NotHuman();
+error UnauthorizedTransfer();
 
 contract SBT is ISBT, ERC721 {
 	IMetadata private _metadata;
@@ -40,5 +42,27 @@ contract SBT is ISBT, ERC721 {
 
 	function metadataContract() external view returns (address) {
 		return address(_metadata);
+	}
+
+	// Non open transferability
+
+	function transferFrom(address, address, uint256) public virtual override(ERC721, IERC721) {
+		revert UnauthorizedTransfer();
+	}
+
+	function safeTransferFrom(address, address, uint256) public virtual override(ERC721, IERC721) {
+		revert UnauthorizedTransfer();
+	}
+
+	function safeTransferFrom(address, address, uint256, bytes memory) public virtual override(ERC721, IERC721) {
+		revert UnauthorizedTransfer();
+	}
+
+	function approve(address, uint256) public virtual override(ERC721, IERC721) {
+		revert UnauthorizedTransfer();
+	}
+
+	function setApprovalForAll(address, bool) public virtual override(ERC721, IERC721) {
+		revert UnauthorizedTransfer();
 	}
 }
