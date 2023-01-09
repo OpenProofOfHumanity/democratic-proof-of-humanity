@@ -36,6 +36,14 @@ abstract contract VerificationProcess is IVerificationProcess {
 		_confirmation = IConfirmation(confirmation);
 	}
 
+	function requestStatus(uint256 requestId) public view virtual returns (RequestStatus) {
+		return _requests[requestId].status;
+	}
+
+	function _updateStatus(uint256 _requestId, RequestStatus _newStatus) private {
+		_requests[_requestId].status = _newStatus;
+	}
+
 	function addRequest(string calldata evidence) external {
 		_beforeNewRequest(msg.sender);
 
@@ -56,13 +64,5 @@ abstract contract VerificationProcess is IVerificationProcess {
 	function _beforeNewRequest(address _requester) internal virtual {
 		if (_pendingRequest[_requester]) revert AnotherPendingRequest(_requester);
 		// can be called in child contracts using super and adding other requirements
-	}
-
-	function requestStatus(uint256 requestId) public view virtual returns (RequestStatus) {
-		return _requests[requestId].status;
-	}
-
-	function _updateStatus(uint256 _requestId, RequestStatus _newStatus) private {
-		_requests[_requestId].status = _newStatus;
 	}
 }
