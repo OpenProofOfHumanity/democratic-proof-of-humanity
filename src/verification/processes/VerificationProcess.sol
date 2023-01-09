@@ -7,6 +7,9 @@ import {RequestData} from "../../data-structures/RequestData.sol";
 import {IVerificationPhase} from "../phases/IVerificationPhase.sol";
 import {IConfirmation} from "../phases/confirmation/IConfirmation.sol";
 
+// errors
+import {AlreadySubmitted, IncompleteVouching, IncompleteFunding, IncompleteVerification, InvalidCurrentStatus} from "../data-structures/Errors.sol";
+
 abstract contract VerificationProcess is IVerificationProcess {
 	event NewRequest(uint256 requestId, uint256 requester, string evidence);
 	event NewPhase(uint256 requestId, RequestStatus newStatus);
@@ -20,6 +23,12 @@ abstract contract VerificationProcess is IVerificationProcess {
 	IVerificationPhase private _funding;
 	IConfirmation private _confirmation;
 
+	modifier currentStatus(uint256 requestId, RequestStatus expectedStatus) {
+		if (requestStatus(requestId) != expectedStatus)
+			revert InvalidCurrentStatus(requestId, requestStatus(requestId), expectedStatus);
+		_;
+	}
+
 	constructor(address token, address vouching, address funding, address confirmation) {
 		// _sbt = ISBT(token);
 		_vouching = IVerificationPhase(vouching);
@@ -27,9 +36,7 @@ abstract contract VerificationProcess is IVerificationProcess {
 		_confirmation = IConfirmation(confirmation);
 	}
 
-	function necessaryVouches() external view virtual returns (uint256 amount);
-
-	function necessaryFunding() external view virtual returns (address token, uint256 amount);
-
-	function requestStatus(uint256 requestId) external view virtual returns (RequestStatus);
+	function requestStatus(uint256 requestId) public view virtual returns (RequestStatus) {
+		return _requests[requestId].status;
+	}
 }
