@@ -32,7 +32,7 @@ abstract contract VerificationProcess is IVerificationProcess {
 		_;
 	}
 
-	constructor(address token, address vouching, address funding, address confirmation) {
+	constructor(address vouching, address funding, address confirmation) {
 		// _sbt = ISBT(token);
 		_vouching = IVerificationPhase(vouching);
 		_funding = IVerificationPhase(funding);
@@ -79,4 +79,15 @@ abstract contract VerificationProcess is IVerificationProcess {
 
 		_confirmation.startProcess(_requestType, requestId);
 	}
+
+	function processRequest(uint256 requestId) external currentStatus(requestId, RequestStatus.PendingConfirmation) {
+		if (!_confirmation.complete(_requestType, requestId)) revert IncompleteConfirmation(requestId);
+
+		_updateStatus(requestId, RequestStatus.Verified);
+
+		_applyRequestEffects(requestId);
+	}
+
+	// override in child contracts depending on request type
+	function _applyRequestEffects(uint256 _requestId) internal virtual;
 }
