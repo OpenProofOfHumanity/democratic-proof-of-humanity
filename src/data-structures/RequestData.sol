@@ -3,11 +3,10 @@ pragma solidity 0.8.17;
 
 import {RequestStatus} from "./RequestStatus.sol";
 
-struct RecoveryRequest {
-	address from;
-	address to;
-	uint256 requestTimestamp;
-	uint256 pendingFrom;
+struct RequestData {
+	address requester;
+	uint256 submissionTimestamp;
+	uint256 pendingConfirmationFrom;
 	string evidence;
 	RequestStatus status;
 }
