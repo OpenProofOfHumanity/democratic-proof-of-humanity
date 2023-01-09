@@ -6,13 +6,16 @@ import {RequestStatus} from "../../data-structures/RequestStatus.sol";
 import {RequestData} from "../../data-structures/RequestData.sol";
 import {IVerificationPhase} from "../phases/IVerificationPhase.sol";
 import {IConfirmation} from "../phases/confirmation/IConfirmation.sol";
+import {RequestType} from "../../data-structures/RequestType.sol";
 
 // errors
-import {AlreadySubmitted, IncompleteVouching, IncompleteFunding, IncompleteConfirmation, InvalidCurrentStatus, AnotherPendingRequest} from "../../data-structures/Errors.sol";
+import {IncompleteVouching, IncompleteFunding, IncompleteConfirmation, InvalidCurrentStatus, AnotherPendingRequest} from "../../data-structures/Errors.sol";
 
 abstract contract VerificationProcess is IVerificationProcess {
 	event NewRequest(uint256 requestId, address requester, string evidence);
-	event NewPhase(uint256 requestId, RequestStatus newStatus);
+	event StatusUpdate(uint256 requestId, RequestStatus newStatus);
+
+	RequestType internal _requestType;
 
 	RequestData[] private _requests;
 	mapping(address => bool) _pendingRequest;
@@ -42,6 +45,8 @@ abstract contract VerificationProcess is IVerificationProcess {
 
 	function _updateStatus(uint256 _requestId, RequestStatus _newStatus) private {
 		_requests[_requestId].status = _newStatus;
+
+		emit StatusUpdate(_requestId, _newStatus);
 	}
 
 	function addRequest(string calldata evidence) external {
@@ -64,5 +69,14 @@ abstract contract VerificationProcess is IVerificationProcess {
 	function _beforeNewRequest(address _requester) internal virtual {
 		if (_pendingRequest[_requester]) revert AnotherPendingRequest(_requester);
 		// can be called in child contracts using super and adding other requirements
+	}
+
+	function moveToConfirmation(uint256 requestId) external currentStatus(requestId, RequestStatus.VouchingAndFunding) {
+		if (!_vouching.complete(_requestType, requestId)) revert IncompleteVouching(requestId);
+		if (!_funding.complete(_requestType, requestId)) revert IncompleteFunding(requestId);
+
+		_updateStatus(requestId, RequestStatus.PendingConfirmation);
+
+		_confirmation.startProcess(_requestType, requestId);
 	}
 }
