@@ -16,3 +16,5 @@ error IncompleteFunding(uint256 requestId);
 error IncompleteConfirmation(uint256 requestId);
 
 error InvalidCurrentStatus(uint256 requestId, RequestStatus current, RequestStatus expected);
+
+error AnotherPendingRequest(address requester);
