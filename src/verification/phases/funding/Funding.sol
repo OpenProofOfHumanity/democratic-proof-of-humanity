@@ -2,5 +2,6 @@
 pragma solidity 0.8.17;
 
 import {IFunding} from "./IFunding.sol";
+import {VerificationPhase} from "../VerificationPhase.sol";
 
-contract Funding is IFunding {}
+contract Funding is IFunding, VerificationPhase {}
