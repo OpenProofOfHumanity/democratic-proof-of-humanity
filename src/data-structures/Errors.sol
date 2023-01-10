@@ -25,3 +25,6 @@ error IncompleteConfirmation(uint256 requestId);
 error AlreadyHuman(address human);
 error AnotherPendingRequest(address requester);
 error InvalidCurrentStatus(uint256 requestId, RequestStatus current, RequestStatus expected);
+
+// phases checks
+error InvalidSender(address sender);

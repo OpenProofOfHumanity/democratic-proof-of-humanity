@@ -6,10 +6,19 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ISBT} from "./ISBT.sol";
 import {IMetadata} from "./metadata/IMetadata.sol";
 
-import {NotHumanID, UnauthorizedTransfer} from "../data-structures/Errors.sol";
+import {RequestType} from "../data-structures/RequestType.sol";
+
+import {NotHumanID, UnauthorizedTransfer, InvalidSender} from "../data-structures/Errors.sol";
 
 contract SBT is ISBT, ERC721 {
 	IMetadata private _metadata;
+
+	mapping(RequestType => address) private _verificationContracts;
+
+	modifier onlyVerificationContract(RequestType requestType) {
+		if (msg.sender != _verificationContracts[requestType]) revert InvalidSender(msg.sender);
+		_;
+	}
 
 	constructor(address initialMetadataContract) ERC721("Humanity Id", "HUMAN") {
 		_metadata = IMetadata(initialMetadataContract);
