@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
+// interfaces
+
 import {IVerificationProcess} from "./IVerificationProcess.sol";
-import {RequestStatus} from "../../data-structures/RequestStatus.sol";
-import {RequestData} from "../../data-structures/RequestData.sol";
+import {ISBT} from "../../sbt/ISBT.sol";
 import {IVerificationPhase} from "../phases/IVerificationPhase.sol";
 import {IConfirmation} from "../phases/confirmation/IConfirmation.sol";
+
+// data structures
+import {RequestStatus} from "../../data-structures/RequestStatus.sol";
+import {RequestData} from "../../data-structures/RequestData.sol";
 import {RequestType} from "../../data-structures/RequestType.sol";
 
 // errors
@@ -17,10 +22,10 @@ abstract contract VerificationProcess is IVerificationProcess {
 
 	RequestType internal _requestType;
 
-	RequestData[] private _requests;
+	RequestData[] internal _requests;
 	mapping(address => bool) _pendingRequest;
 
-	// ISBT private _sbt;
+	ISBT internal _sbt;
 
 	IVerificationPhase private _vouching;
 	IVerificationPhase private _funding;
@@ -32,8 +37,10 @@ abstract contract VerificationProcess is IVerificationProcess {
 		_;
 	}
 
-	constructor(address vouching, address funding, address confirmation) {
-		// _sbt = ISBT(token);
+	constructor(RequestType requestType, address sbt, address vouching, address funding, address confirmation) {
+		_requestType = requestType;
+
+		_sbt = ISBT(sbt);
 		_vouching = IVerificationPhase(vouching);
 		_funding = IVerificationPhase(funding);
 		_confirmation = IConfirmation(confirmation);
