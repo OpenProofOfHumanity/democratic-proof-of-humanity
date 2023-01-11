@@ -5,13 +5,21 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {ISBT} from "./ISBT.sol";
 import {IMetadata} from "./metadata/IMetadata.sol";
+import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 
 import {RequestType} from "../data-structures/RequestType.sol";
 
 import {NotHumanID, UnauthorizedTransfer, InvalidSender} from "../data-structures/Errors.sol";
 
 contract SBT is ISBT, ERC721 {
+	using Counters for Counters.Counter;
+
 	IMetadata private _metadata;
+
+	Counters.Counter private _tokenIds;
+
+	// reverse of ownerOf(uint256)
+	mapping(address => uint256) _humanIds;
 
 	mapping(RequestType => address) private _verificationContracts;
 

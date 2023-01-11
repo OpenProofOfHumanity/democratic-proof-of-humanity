@@ -21,6 +21,5 @@ abstract contract Registration is IRegistration, VerificationProcess {
 
 	function _applyRequestEffects(uint256 _requestId) internal override {
 		_sbt.mint(_requestId, _requests[_requestId].requester);
-		// pending: funding -> claimable
 	}
 }

@@ -92,9 +92,13 @@ abstract contract VerificationProcess is IVerificationProcess {
 
 		_updateStatus(requestId, RequestStatus.Verified);
 
+		// pending: funding -> claimable
+
 		_applyRequestEffects(requestId);
 	}
 
 	// override in child contracts depending on request type
-	function _applyRequestEffects(uint256 _requestId) internal virtual;
+	function _applyRequestEffects(uint256 _requestId) internal virtual {
+		// pending: funding -> claimable
+	}
 }
