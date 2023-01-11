@@ -16,7 +16,7 @@ contract SBT is ISBT, ERC721 {
 
 	IMetadata private _metadata;
 
-	Counters.Counter private _tokenIds;
+	Counters.Counter private _tokenCounter;
 
 	// reverse of ownerOf(uint256)
 	mapping(address => uint256) _humanIds;
@@ -60,8 +60,16 @@ contract SBT is ISBT, ERC721 {
 		return address(_metadata);
 	}
 
+	function humanIdOf(address human) external view returns (uint256) {
+		return _humanIds[human];
+	}
+
 	function isHuman(uint256 humanId) external view returns (bool) {
 		return _exists(humanId);
+	}
+
+	function isHuman(address human) external view returns (bool) {
+		return _humanIds[human] != 0;
 	}
 
 	// Non open transferability
